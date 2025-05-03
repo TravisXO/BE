@@ -18,18 +18,17 @@ namespace BE.Areas.Identity.Pages.Account
     public class ConfirmEmailModel : PageModel
     {
         private readonly UserManager<BEUser> _userManager;
+        private readonly SignInManager<BEUser> _signInManager;
 
-        public ConfirmEmailModel(UserManager<BEUser> userManager)
+        public ConfirmEmailModel(UserManager<BEUser> userManager, SignInManager<BEUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string userId, string code)
         {
             if (userId == null || code == null)
@@ -45,8 +44,17 @@ namespace BE.Areas.Identity.Pages.Account
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false); // ✅ Sign in automatically
+                StatusMessage = "Email confirmed. Welcome back!";
+                return RedirectToPage("/Index"); // ⬅ redirect user to home or dashboard
+            }
+
+            StatusMessage = "Error confirming your email.";
             return Page();
         }
     }
+
 }
