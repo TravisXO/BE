@@ -63,18 +63,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        function toggleUserMenu() {
-            document.getElementById("user-menu").classList.toggle("hidden");
-        }
-
-        document.addEventListener("click", function (e) {
-            const wrapper = document.querySelector(".user-dropdown-wrapper");
-            if (!wrapper.contains(e.target)) {
-                document.getElementById("user-menu").classList.add("hidden");
-            }
-        });
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

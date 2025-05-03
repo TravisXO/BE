@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using BE.Data;
 using BE.Areas.Identity.Data;
+using BE.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("BEContextConnection") ?? throw new InvalidOperationException("Connection string 'BEContextConnection' not found.");
@@ -13,6 +15,9 @@ builder.Services.AddDefaultIdentity<BEUser>(options => options.SignIn.RequireCon
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 
 var app = builder.Build();
 
