@@ -4,30 +4,112 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h2 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h2>
-<hr />
+<section style="min-height: 100vh; background-color: #2B2B2B; font-family: 'Inter', sans-serif; position: relative; overflow: hidden;">
+    <!-- Background Elements -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+        <!-- Marble Image with Gradient -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/images/external-login/external-login-marble.webp'); background-size: cover; background-position: center;"></div>
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(43, 43, 43, 0.4);"></div>
+        </div>
 
-<p id="external-login-description" class="text-info">
-    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
-</p>
-
-<div class="row">
-    <div class="col-md-4">
-        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email."/>
-                <label asp-for="Input.Email" class="form-label"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+        <!-- Decorative Elements -->
+        <div style="position: absolute; top: 10%; right: 10%; width: 25%; height: 25%; border-radius: 50%; background-color: #FF6A00; opacity: 0.05;"></div>
+        <div style="position: absolute; bottom: -5%; left: 30%; width: 40%; height: 40%; border-radius: 50%; background-color: #EEEBE3; opacity: 0.03;"></div>
     </div>
-</div>
+
+    <!-- Content Container -->
+    <div style="position: relative; z-index: 2; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div style="width: 90%; max-width: 480px; background-color: #EEEBE3; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);">
+            <!-- Orange accent -->
+            <div style="position: relative; height: 8px; background: linear-gradient(90deg, #FF6A00, rgba(255, 106, 0, 0.7));">
+                <div style="position: absolute; top: -4px; left: 24px; width: 12px; height: 12px; border-radius: 50%; background-color: #FF6A00;"></div>
+                <div style="position: absolute; top: -6px; right: 40px; width: 8px; height: 8px; border-radius: 50%; background-color: #FF6A00; opacity: 0.7;"></div>
+            </div>
+
+            <div style="padding: 2.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h1 style="font-family: 'Playfair Display', serif; color: #2B2B2B; font-size: 2rem; margin: 0;">@ViewData["Title"]</h1>
+                    <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background-color: rgba(255, 106, 0, 0.1);">
+                        <span style="font-family: 'Playfair Display', serif; color: #FF6A00; font-weight: 700; font-size: 1.1rem;">BE</span>
+                    </div>
+                </div>
+
+                <h2 id="external-login-title" style="color: #555; font-size: 1.2rem; font-weight: 400; margin-bottom: 1.5rem;">
+                    Almost there! Complete your registration with @Model.ProviderDisplayName
+                </h2>
+
+                <div style="width: 50px; height: 4px; background-color: #FF6A00; margin-bottom: 1.5rem;"></div>
+
+                <p id="external-login-description" style="color: #666; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.6;">
+                    You've successfully authenticated with <strong style="color: #2B2B2B;">@Model.ProviderDisplayName</strong>.
+                    Please enter an email address for this site below and click the Register button to complete
+                    your registration.
+                </p>
+
+                <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post" style="margin-bottom: 1rem;">
+                    <div asp-validation-summary="ModelOnly" style="color: #FF6A00; font-size: 0.85rem; margin-bottom: 1rem;" role="alert"></div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label asp-for="Input.Email" style="display: block; margin-bottom: 0.5rem; color: #555; font-size: 0.9rem; font-weight: 500;">Email Address</label>
+                        <input asp-for="Input.Email" style="width: 100%; padding: 14px 16px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; transition: all 0.3s ease;" autocomplete="email" placeholder="Please enter your email" />
+                        <span asp-validation-for="Input.Email" style="color: #FF6A00; font-size: 0.85rem; display: block; margin-top: 0.5rem;"></span>
+                    </div>
+
+                    <button type="submit" style="width: 100%; padding: 14px; background-color: #FF6A00; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-bottom: 1.5rem; box-shadow: 0 4px 6px rgba(255, 106, 0, 0.1); transition: all 0.3s ease;">
+                        Complete Registration
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="/Identity/Account/Login" style="color: #666; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem; transform: translateY(2px);">
+                            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                        Return to login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Focus states for inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#FF6A00';
+                this.style.boxShadow = '0 0 0 3px rgba(255, 106, 0, 0.1)';
+                this.style.backgroundColor = 'white';
+            });
+
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#ddd';
+                this.style.boxShadow = 'none';
+                this.style.backgroundColor = '#f9f9f9';
+            });
+        });
+
+        // Button hover effect
+        document.querySelector('button[type="submit"]').addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#e55f00';
+            this.style.transform = 'translateY(-2px)';
+        });
+
+        document.querySelector('button[type="submit"]').addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '#FF6A00';
+            this.style.transform = 'translateY(0)';
+        });
+
+        // Link hover effect
+        document.querySelector('a[href="/Identity/Account/Login"]').addEventListener('mouseenter', function() {
+            this.style.color = '#FF6A00';
+        });
+
+        document.querySelector('a[href="/Identity/Account/Login"]').addEventListener('mouseleave', function() {
+            this.style.color = '#666';
+        });
+    </script>
 }
