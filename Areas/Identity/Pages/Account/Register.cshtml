@@ -4,66 +4,78 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<section class="d-flex" style="height: 100vh;">
+    <!-- Left Column -->
+    <div class="col-md-6 d-flex justify-content-center align-items-center flex-column position-relative"
+         style="padding: 3rem; border-right: 1px solid #2b2b2b; background-image: url('/images/register/register-marble.webp'); background-size: cover; background-position: center;">
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+        <!-- Overlay -->
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(43, 43, 43, 0.4); z-index: 1;"></div>
+
+        <!-- Selection Buttons -->
+        <div id="selectionButtons" class="text-center" style="position: relative; z-index: 2;">
+            <button class="btn btn-outline-secondary w-100 mb-3 d-flex align-items-center justify-content-center"
+                    onclick="location.href='@Url.Page("./ExternalLogin", new { provider = "Google", returnUrl = Model.ReturnUrl })'"
+                    style="max-width: 300px; background-color: white; color: #2b2b2b;">
+                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" style="width:20px; height:20px; margin-right:10px;">
+                Sign up with Google
+            </button>
+
+
+            <div class="mb-3 text-muted">or</div>
+
+            <button class="btn" style="background-color: #FF6A00; color: white; min-width: 300px;" onclick="toggleToEmail()">
+                <i class="fa fa-envelope me-2"></i>Sign up with Email
+            </button>
+        </div>
+
+        <!-- Email Form -->
+        <div id="emailForm" class="d-none" style="width: 100%; max-width: 400px; position: relative; z-index: 2;">
+            <h3 class="mb-4 fw-bold" style="color: #FF6A00">Sign up with Email</h3>
+            <form method="post">
+                <div class="mb-3">
+                    <input asp-for="Input.Email" class="form-control" placeholder="Email" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <input asp-for="Input.Password" class="form-control" placeholder="Password" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="mb-4">
+                    <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm password" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn w-100 fw-bold" style="background-color:#FF6A00; color:white;">Register</button>
+            </form>
+            <br />
+            <button onclick="toggleToGoogle()" class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center"
+                    style="height: 45px; background-color: white; color: #2b2b2b;">
+                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" style="width: 20px; height: 20px; margin-right: 8px;">
+                Sign up with Google
+            </button>
+        </div>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                                article
-                                about setting up this ASP.NET application to support logging in via external services
-                            </a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
+
+
+    <!-- Right Column -->
+    <div class="col-md-6 d-flex flex-column justify-content-center align-items-center text-white text-center" style="background-color: #FF6A00;">
+        <h2 class="mb-4" style="font-family: 'Georgia', serif;">Welcome to BE.</h2>
+        <p class="mb-5">Your creative and reliable partner in modern branding.</p>
+        <p class="fw-bold">– The BE. Team</p>
     </div>
-</div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function toggleToEmail() {
+            document.getElementById("selectionButtons").classList.add("d-none");
+            document.getElementById("emailForm").classList.remove("d-none");
+        }
+
+        function toggleToGoogle() {
+            document.getElementById("emailForm").classList.add("d-none");
+            document.getElementById("selectionButtons").classList.remove("d-none");
+        }
+    </script>
 }
