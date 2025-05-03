@@ -1,0 +1,57 @@
+﻿@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Log out";
+}
+
+<div style="min-height: 100vh; position: relative; overflow: hidden; font-family: 'Inter', sans-serif;">
+
+    <!-- Background Video -->
+    <video autoplay muted loop playsinline
+           style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+        <source src="~/videos/logout/logout.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Dark Overlay -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(43, 43, 43, 0.4); z-index: 2;"></div>
+
+    <!-- Content Wrapper -->
+    <div style="position: relative; z-index: 3; display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+
+        @{
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                    <!-- Styled Logout Message Container -->
+                    <div style="background-color: rgba(255, 106, 0, 0.405); width: 50vw; padding: 3rem 3.5rem; border-radius: 16px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); text-align: center; color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center;">
+
+                        <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1.2rem;">Goodbye for now!</h2>
+
+                        <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 0.5rem;">
+                            It feels a little darker without you here.
+                        </p>
+                        <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 2rem;">
+                            Hoping you'll brighten our corner of the internet again soon.
+                        </p>
+
+                        <p style="font-style: italic; margin-bottom: 1.5rem;">– The <strong>BE.</strong> Team</p>
+
+                        <!-- Styled Logout Button -->
+                        <button type="submit"
+                                style="padding: 0.65rem 1.5rem; background-color: #2B2B2B; color: #FFA600; border-radius: 30px; text-decoration: none; font-weight: 500; transition: background-color 0.3s, color 0.3s; border: none; cursor: pointer;"
+                                onmouseover="this.style.backgroundColor='#FFA600'; this.style.color='#EEEBE3';"
+                                onmouseout="this.style.backgroundColor='#2B2B2B'; this.style.color='#FFA600';">
+                            Click here to Logout
+                        </button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <p>You have successfully logged out of the application.</p>
+            }
+        }
+
+    </div>
+</div>
