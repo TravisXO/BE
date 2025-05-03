@@ -42,3 +42,19 @@
     color: var(--color-primary);
     cursor: pointer;
 }
+
+.user-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-primary);
+    cursor: pointer;
+    font-size: 1.2rem; /* match icon size */
+    line-height: 1;
+}
+
+    .user-dropdown i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
