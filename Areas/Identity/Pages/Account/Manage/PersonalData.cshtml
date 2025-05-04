@@ -1,0 +1,41 @@
+﻿@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Personal Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+    var brandOrange = "#FF6A00";
+    var brandCharcoal = "#2B2B2B";
+    var fontHeading = "'Playfair Display', serif";
+    var fontBody = "'Inter', sans-serif";
+    var dangerColor = "#dc3545";
+}
+
+<div style="padding: 2rem 4rem; font-family: @fontBody;">
+    <h2 style="font-family: @fontHeading; font-size: 1.75rem; color: @brandCharcoal; border-bottom: 3px solid @brandOrange; padding-bottom: 0.5rem; margin-bottom: 2rem;">Personal Data</h2>
+
+    <div style="background-color: white; border-radius: 12px; padding: 2rem 2.5rem; max-width: 700px; box-shadow: 0 12px 24px rgba(0,0,0,0.06);">
+        <p style="color: @brandCharcoal; font-size: 0.95rem;">
+            Your account contains personal data that you have given us. This page allows you to download or delete that data.
+        </p>
+
+        <p style="color: @brandCharcoal; font-size: 0.95rem;">
+            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+        </p>
+
+        <form id="download-data" asp-page="DownloadPersonalData" method="post">
+            <button class="btn btn-primary" type="submit"
+                    style="background-color: @brandOrange; color: white; font-family: @fontBody; font-weight: 600; border: none; padding: 0.65rem 1.25rem; border-radius: 6px; margin-top: 1rem;">
+                Download
+            </button>
+        </form>
+
+        <hr style="margin: 2rem 0;" />
+
+        <form id="delete-user" method="post">
+            <button class="btn btn-danger" type="submit"
+                    style="background-color: @dangerColor; color: white; font-family: @fontBody; font-weight: 600; border: none; padding: 0.65rem 1.25rem; border-radius: 6px;">
+                Delete Account
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+﻿@page
+@model ExternalLoginsModel
+@{
+    ViewData["Title"] = "External Logins";
+    ViewData["ActivePage"] = ManageNavPages.ExternalLogins;
+    var brandOrange = "#FF6A00";
+    var brandCharcoal = "#2B2B2B";
+    var fontHeading = "'Playfair Display', serif";
+    var fontBody = "'Inter', sans-serif";
+    var dangerColor = "#dc3545";
+    var successColor = "#28a745";
+}
+
+<div style="padding: 2rem 4rem; font-family: @fontBody;">
+    <h2 style="font-family: @fontHeading; font-size: 1.75rem; color: @brandCharcoal; border-bottom: 3px solid @brandOrange; padding-bottom: 0.5rem; margin-bottom: 2rem;">Manage your external logins</h2>
+
+    <div style="background-color: white; border-radius: 12px; padding: 2rem 2.5rem; box-shadow: 0 12px 24px rgba(0,0,0,0.06); max-width: 800px;">
+        <p style="color: @brandCharcoal; font-size: 0.95rem; margin-bottom: 1.5rem;">Registered Logins</p>
+
+        @if (Model.CurrentLogins?.Count > 0)
+        {
+            <table class="table">
+                <thead style="font-weight: 600;">
+                    <tr style="color: @brandCharcoal;">
+                        <th>Provider</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var login in Model.CurrentLogins)
+                    {
+                        <tr style="color: @brandCharcoal;">
+                            <td>@login.LoginProvider</td>
+                            <td>
+                                @if (Model.ShowRemoveButton)
+                                {
+                                    <form asp-page-handler="RemoveLogin" method="post" style="display:inline">
+                                        <div>
+                                            <input type="hidden" name="LoginProvider" value="@login.LoginProvider" />
+                                            <input type="hidden" name="ProviderKey" value="@login.ProviderKey" />
+                                            <button type="submit"
+                                                    class="btn btn-sm"
+                                                    style="color: white; background-color: @dangerColor; border: none; padding: 0.35rem 0.75rem; border-radius: 4px; font-size: 0.9rem;">
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div style="color: @brandCharcoal;">No external logins configured.</div>
+        }
+
+        @if (Model.OtherLogins?.Count > 0)
+        {
+            <hr style="margin: 2rem 0;" />
+            <form id="link-login-form" asp-page-handler="LinkLogin" method="post" class="form-horizontal">
+                <div>
+                    <p style="color: @brandCharcoal; font-size: 0.95rem;">Add another external login:</p>
+                    @foreach (var provider in Model.OtherLogins)
+                    {
+                        <button type="submit" class="btn"
+                                name="provider" value="@provider.Name"
+                                title="Log in using your @provider.DisplayName account"
+                                style="background-color: @brandOrange; color: white; font-family: @fontBody; font-weight: 500; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; margin-right: 0.75rem; margin-top: 0.5rem;">
+                            @provider.DisplayName
+                        </button>
+                    }
+                </div>
+            </form>
+        }
+    </div>
+</div>

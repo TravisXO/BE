@@ -1,96 +1,47 @@
 ﻿@page
 @model IndexModel
 @{
-    // Page setup: Title and active navigation element
-    ViewData["Title"] = "Account Management"; // Changed title for a more comprehensive feel
+    ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
-
-    // Define Brand Colors and Fonts for easier use in inline styles
     var brandOrange = "#FF6A00";
     var brandBeige = "#EEEBE3";
     var brandCharcoal = "#2B2B2B";
-    var fontFamilyHeading = "'Playfair Display', serif";
-    var fontFamilyBody = "'Inter', sans-serif";
-    var inputBgColor = "#FFFFFF"; // White background for inputs
-    var inputBorderColor = brandCharcoal;
-    var disabledBgColor = "#F5F5F5"; // Lighter gray for disabled input
-    var dangerColor = "#dc3545"; // Standard red for errors
+    var fontHeading = "'Playfair Display', serif";
+    var fontBody = "'Inter', sans-serif";
+    var inputBg = "#FFFFFF";
+    var inputBorder = brandCharcoal;
+    var disabledBg = "#F5F5F5";
+    var dangerColor = "#dc3545";
 }
 
-@* Injecting styles directly into the body tag for background and default text styling *@
-<body style="background-color: @brandBeige; color: @brandCharcoal; font-family: @fontFamilyBody;">
+<div style="padding: 2rem 4rem; font-family: @fontBody;">
+    <h2 style="font-family: @fontHeading; font-size: 1.75rem; color: @brandCharcoal; border-bottom: 3px solid @brandOrange; padding-bottom: 0.5rem; margin-bottom: 2rem;">Profile</h2>
 
-    @* Page Title - Using Playfair Display font and Charcoal color *@
-    <h3 style="font-family: @fontFamilyHeading; color: @brandCharcoal; margin-bottom: 2rem; text-align: center;">
-        @ViewData["Title"]
-    </h3>
+    <div style="background-color: white; border-radius: 12px; padding: 2rem 2.5rem; max-width: 600px; box-shadow: 0 12px 24px rgba(0,0,0,0.06);">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert" style="color: @dangerColor; font-family: @fontBody; margin-bottom: 1rem;"></div>
 
-    @* Status Message Partial View *@
-    <partial name="_StatusMessage" for="StatusMessage" />
+            <div class="form-group mb-4">
+                <label asp-for="Username" class="form-label" style="color: @brandCharcoal; font-weight: 500;">Username</label>
+                <input asp-for="Username" class="form-control" placeholder="Username" disabled
+                       style="font-family: @fontBody; background-color: @disabledBg; border: 1px solid @inputBorder; color: @brandCharcoal; padding: 0.75rem; border-radius: 6px; opacity: 0.7;" />
+            </div>
 
-    @* Main content row, centered *@
-    <div class="row" style="display: flex; justify-content: center;">
-        @* Form column, limiting width and adding padding/border for visual structure *@
-        <div class="col-md-6" style="max-width: 500px; width: 100%; background-color: @brandBeige; padding: 2rem; border-radius: 8px;">
-            <form id="profile-form" method="post">
-                @* Validation Summary - Using standard danger color but with Inter font *@
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert" style="color: @dangerColor; font-family: @fontFamilyBody; margin-bottom: 1rem; list-style: none; padding-left: 0;"></div>
+            <div class="form-group mb-4">
+                <label asp-for="Input.PhoneNumber" class="form-label" style="color: @brandCharcoal; font-weight: 500;">Phone Number</label>
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone Number"
+                       style="font-family: @fontBody; background-color: @inputBg; border: 1px solid @inputBorder; color: @brandCharcoal; padding: 0.75rem; border-radius: 6px;" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger" style="color: @dangerColor; font-size: 0.875em; display: block; margin-top: 0.25rem;"></span>
+            </div>
 
-                @* Username Input (Disabled) - Specific styling for disabled state *@
-                <div class="form-floating mb-3">
-                    <input asp-for="Username" class="form-control" placeholder="Username" disabled
-                           style="font-family: @fontFamilyBody;
-                                  border: 1px solid @inputBorderColor;
-                                  background-color: @disabledBgColor; /* Distinct disabled background */
-                                  color: @brandCharcoal;
-                                  opacity: 0.7; /* Slightly faded */
-                                  border-radius: 4px;
-                                  padding: 1rem;" />
-                    <label asp-for="Username" class="form-label"
-                           style="font-family: @fontFamilyBody; color: @brandCharcoal; opacity: 0.65;"></label>
-                </div>
-
-                @* Phone Number Input (Editable) *@
-                <div class="form-floating mb-4">
-                    @* Increased bottom margin slightly *@
-                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."
-                           style="font-family: @fontFamilyBody;
-                                  border: 1px solid @inputBorderColor;
-                                  background-color: @inputBgColor;
-                                  color: @brandCharcoal;
-                                  border-radius: 4px;
-                                  padding: 1rem;" />
-                    <label asp-for="Input.PhoneNumber" class="form-label"
-                           style="font-family: @fontFamilyBody; color: @brandCharcoal; opacity: 0.65;"></label>
-                    @* Phone Number Validation Message *@
-                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"
-                          style="color: @dangerColor; font-family: @fontFamilyBody; font-size: 0.875em; display: block; margin-top: 0.25rem;"></span>
-                </div>
-
-                @* Submit Button - Styled with Brand Orange, Bold Inter font *@
-                <button id="update-profile-button" type="submit" class="btn btn-lg btn-primary"
-                        style="background-color: @brandOrange;
-                               color: white;
-                               font-family: @fontFamilyBody;
-                               font-weight: 700; /* Bold */
-                               border: none; /* Removed default border */
-                               padding: 0.75rem 1.5rem; /* Vertical and horizontal padding */
-                               border-radius: 4px; /* Slightly rounded corners */
-                               cursor: pointer;
-                               display: block; /* Make it a block element */
-                               width: 100%; /* Full width of its container */
-                               text-align: center;
-                               margin-top: 1.5rem;">
-                    @* Added top margin *@
-                    Save Changes
-                </button>
-            </form>
-        </div>
+            <button id="update-profile-button" type="submit" class="btn btn-lg btn-primary"
+                    style="background-color: @brandOrange; color: white; font-family: @fontBody; font-weight: 600; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; width: 100%;">
+                Save changes
+            </button>
+        </form>
     </div>
-
-</body> @* Close the body tag we added styles to *@
+</div>
 
 @section Scripts {
-@* Validation Scripts Partial View - Remains unchanged *@
     <partial name="_ValidationScriptsPartial" />
 }
