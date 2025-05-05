@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/header.css" />
     <link rel="stylesheet" href="~/css/sidebar.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
     <link rel="stylesheet" href="~/css/index.css" />
 </head>
 <body>
@@ -57,10 +58,75 @@
     </main>
 
     <footer class="border-top footer text-muted" style="margin-left: 80px;">
-        <div class="container">
-            &copy; 2025 - BE - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="footer-main">
+            <div class="container">
+                <div class="footer-content">
+                    <!-- Column 1: Logo and Contact Info -->
+                    <div class="footer-column">
+                        <div class="footer-logo">
+                            <h2 class="logo">BE.</h2>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <i class="contact-icon email-icon"></i>
+                                <span>contact@be.theone.com</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="contact-icon phone-icon"></i>
+                                <span>+260 xxxx xxx xx</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="contact-icon website-icon"></i>
+                                <span>www.be.com</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Quick Links -->
+                    <div class="footer-column">
+                        <h3 class="footer-heading">QUICK LINKS</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Our Services</a></li>
+                            <li><a href="#">Portfolio</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3: Explore -->
+                    <div class="footer-column">
+                        <h3 class="footer-heading">EXPLORE</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Our Story</a></li>
+                            <li><a href="#">Testimonials</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Careers</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Social Media Banner -->
+                <div class="social-banner">
+                    <a href="#" class="social-icon facebook"></a>
+                    <a href="#" class="social-icon whatsapp"></a>
+                    <a href="#" class="social-icon instagram"></a>
+                    <a href="#" class="social-icon twitter"></a>
+                    <a href="#" class="social-icon website"></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright Bar -->
+        <div class="copyright-bar">
+            <div class="container">
+                <div class="copyright-content">
+                    <p>&copy; 2025 - BE - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
+                    <p class="parent-company">by bnopmedia.com</p>
+                </div>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
