@@ -40,10 +40,10 @@
     <header class="header">
         <div class="logo">BE.</div>
         <nav class="nav-links">
-            <a href="#">HOME</a>
-            <a href="#">SHOP</a>
-            <a href="#">ABOUT US</a>
-            <a href="#">CONTACT</a>
+            <a asp-controller="Home" asp-action="Index">HOME</a>
+            <a asp-controller="Shop" asp-action="Shop">SHOP</a>
+            <a asp-controller="Home" asp-action="About">ABOUT US</a>
+            <a asp-controller="Home" asp-action="Contact">CONTACT</a>
         </nav>
         <div class="nav-icons">
             @Html.Partial("_LoginPartial")
