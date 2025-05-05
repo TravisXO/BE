@@ -1,5 +1,43 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<section id="shop" style="padding: 4rem 2rem;">
+    <div class="breadcrumbs">
+        <a href="/" class="breadcrumb-link">Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <a href="/Shop" class="breadcrumb-link">Shop</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">All Products</span>
+    </div>
+
+    <!-- Product-Row -->
+    <div class="row mt-4">
+        <!-- Left Column - Filters -->
+        <div class="col-md-3" style="border-right: 1px solid #FFA600">
+            <h5>Filters</h5>
+            <div>
+                <label><input type="checkbox" /> Backpacks</label><br />
+                <label><input type="checkbox" /> Coolers</label><br />
+                <label><input type="checkbox" /> Drawstring Bags</label><br />
+            </div>
+        </div>
+
+        <!-- Right Column - Product Grid of 4 in a row -->
+        <div class="col-md-9">
+            <div class="row" style="display: flex; flex-wrap: wrap; gap: 2rem;">
+                @foreach (var product in Model)
+                {
+                    <div class="carousel-card">
+                        <img src="@product.ImageUrl" alt="@product.ImageAltText" />
+                        <div class="product-name">@product.Name</div>
+                        <div class="product-footer">
+                            <span class="price">@product.Price</span>
+                            <button class="add-to-cart">
+                                <i class="fas fa-shopping-cart"></i> Add to cart
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+
