@@ -1,1 +1,52 @@
-﻿
+﻿.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.page-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #2B2B2B;
+    color: #FFA600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .page-circle:hover {
+        background-color: #FFA600;
+        color: #2B2B2B;
+    }
+
+    .page-circle.active {
+        background-color: #FFA600;
+        color: #2B2B2B;
+        font-weight: bold;
+    }
+
+.page-nav {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #2B2B2B;
+    color: #FFA600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .page-nav:hover {
+        background-color: #FFA600;
+        color: #2B2B2B;
+    }
