@@ -25,7 +25,9 @@
                 @foreach (var product in Model)
                 {
                     <div class="carousel-card">
-                        <img src="@product.ImageUrl" alt="@product.ImageAltText" />
+                        <a href="@Url.Action("Details", "Shop", new { name = product.Name })">
+                            <img src="@product.ImageUrl" alt="@product.ImageAltText" />
+                        </a>
                         <div class="product-name">@product.Name</div>
                         <div class="product-footer">
                             <span class="price">@product.Price</span>

@@ -29,5 +29,21 @@ namespace BE.Controllers
 
             return View(pagedProducts);
         }
+
+        public IActionResult Details(string name)
+        {
+            var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/products/bags-backpacks/bags_backpacks-details.json");
+            if (!System.IO.File.Exists(jsonPath))
+                return NotFound("Product details file not found.");
+
+            var json = System.IO.File.ReadAllText(jsonPath);
+            var allDetails = JsonSerializer.Deserialize<List<ProductDetail>>(json);
+
+            var product = allDetails.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (product == null)
+                return NotFound("Product not found.");
+
+            return View(product);
+        }
     }
 }
