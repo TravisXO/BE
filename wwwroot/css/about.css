@@ -1,0 +1,250 @@
+﻿/* BE. Branding - About Page CSS
+   Based on brand identity with Orange (#FF6A00), Beige (#EEEBE3), and Charcoal (#2B2B2B) */
+
+/* Root Variables */
+:root {
+    --orange: #FF6A00;
+    --beige: #EEEBE3;
+    --charcoal: #2B2B2B;
+    --font-primary: 'Inter', sans-serif;
+    --font-secondary: 'Playfair Display', serif;
+}
+
+/* Base Styles */
+body {
+    font-family: var(--font-primary);
+    color: var(--charcoal);
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+}
+
+/* Button Styles */
+.btn {
+    background-color: var(--charcoal);
+    color: var(--orange)!important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .btn:hover {
+        background-color: var(--orange);
+        color: var(--charcoal)!important;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 106, 0, 0.2);
+    }
+
+a[href="#who-we-are"] {
+    background-color: var(--charcoal);
+    color: var(--orange);
+    font-weight: 600;
+}
+
+    a[href="#who-we-are"]:hover {
+        background-color: var(--orange);
+        color: var(--charcoal);
+    }
+
+/* Hero Section */
+.about-hero {
+    position: relative;
+}
+
+    .about-hero h1 {
+        text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .about-hero p {
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+.animate__animated {
+    animation-duration: 1.2s;
+}
+
+/* Who We Are Section */
+#who-we-are .card {
+    transition: all 0.3s ease;
+}
+
+    #who-we-are .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+/* Core Brand Personality Section */
+.personality-card {
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+    .personality-card:hover {
+        transform: translateY(-5px);
+        background-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+.badge {
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 30px;
+}
+
+/* Brand Archetype Section */
+.archetype-card {
+    transition: all 0.3s ease;
+}
+
+    .archetype-card:hover {
+        transform: translateY(-5px);
+        background-color: rgba(0, 0, 0, 0.15);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+/* Target Audience Section */
+.audience-card {
+    transition: all 0.3s ease;
+}
+
+    .audience-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+.audience-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+/* Our Process Section */
+.process-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background-color: var(--orange);
+    opacity: 0.4;
+    transform: translateX(-50%);
+}
+
+.process-card {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .process-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+/* Call to Action Section */
+.rounded-4 {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+    .rounded-4:hover {
+        transform: translateY(-5px);
+        background-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .process-timeline::before {
+        left: 10px;
+    }
+
+    .col-lg-5.offset-lg-1,
+    .col-lg-5.offset-lg-6 {
+        margin-left: 30px;
+    }
+
+    .process-card {
+        margin-left: 20px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .process-timeline::before {
+        display: none;
+    }
+
+    .col-md-6.offset-md-6 {
+        margin-left: 0;
+    }
+
+    .process-card {
+        margin-left: 0;
+    }
+
+    .about-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .about-hero p {
+        font-size: 1.25rem;
+    }
+}
+
+/* Animation Enhancements */
+.bi {
+    transition: all 0.3s ease;
+}
+
+.personality-card:hover .bi,
+.archetype-card:hover .bi,
+.audience-card:hover .bi,
+.rounded-4:hover .bi {
+    transform: scale(1.2);
+    color: var(--orange);
+}
+
+/* Enhance scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Additional Typography Refinements */
+.lead {
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.display-2, .display-3, .display-4 {
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+/* Links */
+a {
+    color: var(--orange);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    a:hover {
+        color: darken(var(--orange), 10%);
+    }
+
+/* Lists */
+ul li {
+    margin-bottom: 8px;
+}
+
+/* Fine Details */
+::selection {
+    background-color: var(--orange);
+    color: white;
+}

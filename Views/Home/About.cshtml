@@ -1,5 +1,399 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿<!-- About Us Page - BE. Brand Aligned -->
 @{
+    ViewData["Title"] = "About Us";
 }
+
+<!-- Hero Section -->
+<section class="about-hero d-flex align-items-center justify-content-center text-center text-white font-primary" style="height: 100vh; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.4)), url('/images/about/about-hero.webp') center center / cover no-repeat; background-attachment: fixed;">
+    <div class="container">
+        <h1 class="display-2 fw-bold mb-4 animate__animated animate__fadeIn" style="font-family: var(--font-secondary); color: var(--orange);">We Make You Who You BE.</h1>
+        <p class="lead fs-3 mb-5 animate__animated animate__fadeIn animate__delay-1s">Empowering brands to be seen, remembered, and iconic—through bold strategy and high-quality merchandise.</p>
+        <div class="mt-5 animate__animated animate__fadeIn animate__delay-2s">
+            <a href="#who-we-are" class="btn btn-lg px-5 py-3" style="color: var(--orange); transition: all 0.3s ease;">Discover Our Story</a>
+            <div class="mt-5">
+                <i class="bi bi-chevron-down fs-1 animate__animated animate__fadeInDown animate__infinite" style="color: var(--orange);"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Who We Are Section -->
+<section id="who-we-are" class="d-flex align-items-center" style="min-height: 100vh; background-color: var(--beige); font-family: var(--font-primary);">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h2 class="display-4 fw-bold mb-4" style="font-family: var(--font-secondary); color: var(--charcoal);">Who We Are</h2>
+                <p class="mb-4" style="color: var(--orange);">Presented by a BNOP Creative</p>
+                <p class="lead mb-4" style="color: var(--charcoal);">We turn bold ideas into unforgettable brand identities. From immersive rebranding to custom merchandise, we amplify your presence and drive lasting impact.</p>
+                <p class="mb-4" style="color: var(--charcoal);">Founded in 2018, BE has rapidly established itself as the go-to agency for brands seeking to make a statement. Our diverse team of creatives, strategists, and production experts work in perfect harmony to deliver results that don't just meet expectations—they redefine them.</p>
+                <p class="mb-4" style="color: var(--charcoal);">What sets us apart is our holistic approach: we understand that modern branding requires both digital excellence and physical presence. That's why we offer comprehensive solutions from digital identity to premium merchandise, ensuring your brand maintains consistency across all touchpoints.</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; border-left: 3px solid var(--orange);">
+                            <div class="card-body p-4">
+                                <h4 class="fw-bold mb-3" style="color: var(--charcoal);">Our Vision</h4>
+                                <p style="color: var(--charcoal);">To redefine the standards of modern branding and set the benchmark for excellence across industries.</p>
+                                <p class="mb-0" style="color: var(--charcoal);">We envision a world where every brand has the opportunity to truly express its unique identity and connect authentically with its audience.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; border-left: 3px solid var(--orange);">
+                            <div class="card-body p-4">
+                                <h4 class="fw-bold mb-3" style="color: var(--charcoal);">Our Mission</h4>
+                                <p style="color: var(--charcoal);">To deliver creative solutions that shape perceptions, ignite loyalty, and elevate every touchpoint of your brand.</p>
+                                <p class="mb-0" style="color: var(--charcoal);">We're committed to partnering with visionary businesses ready to stand out and make their mark.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm" style="border-radius: 12px; border-left: 3px solid var(--orange);">
+                            <div class="card-body p-4">
+                                <h4 class="fw-bold mb-3" style="color: var(--charcoal);">Our Approach</h4>
+                                <p class="mb-0" style="color: var(--charcoal);">We don't believe in templates or one-size-fits-all solutions. Every client engagement begins with deep discovery, progresses through strategic development, and culminates in flawless execution. Our collaborative process ensures your unique voice remains central while benefiting from our expertise.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Brand Personality Section -->
+<section class="text-white d-flex align-items-center" style="min-height: 100vh; background-color: var(--charcoal); font-family: var(--font-primary);">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-4 fw-bold mb-5" style="font-family: var(--font-secondary);">Core Brand Personality</h2>
+                <p class="lead mb-5">At BE, our personality isn't just who we are—it's how we deliver. These core traits guide every interaction, design choice, and strategic decision we make for our clients.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="personality-card p-4 h-100" style="background-color: rgba(255,255,255,0.05); border-radius: 12px; border-bottom: 3px solid var(--orange);">
+                    <div class="mb-4">
+                        <i class="bi bi-lightbulb fs-1" style="color: var(--orange);"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Confident & Visionary</h3>
+                    <p class="text-white-50 mb-3">Driven by big ideas, led by purpose.</p>
+                    <p class="mb-0">We see potential where others see limitations. Our confidence comes from expertise and a track record of turning ambitious goals into tangible realities. We don't just respond to trends—we anticipate and shape them.</p>
+                    <div class="mt-4">
+                        <span class="badge me-2" style="background-color: var(--orange); color: white;">Forward-thinking</span>
+                        <span class="badge me-2" style="background-color: var(--orange); color: white;">Decisive</span>
+                        <span class="badge" style="background-color: var(--orange); color: white;">Strategic</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="personality-card p-4 h-100" style="background-color: rgba(255,255,255,0.05); border-radius: 12px; border-bottom: 3px solid var(--orange);">
+                    <div class="mb-4">
+                        <i class="bi bi-palette fs-1" style="color: var(--orange);"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Creative & Expressive</h3>
+                    <p class="text-white-50 mb-3">Design-forward thinking. Bold expression.</p>
+                    <p class="mb-0">Creativity isn't just a department—it's our operating system. We challenge conventions and embrace experimentation. Our work sparks conversation, evokes emotion, and demands attention through thoughtful design and innovative execution.</p>
+                    <div class="mt-4">
+                        <span class="badge me-2" style="background-color: var(--orange); color: white;">Innovative</span>
+                        <span class="badge me-2" style="background-color: var(--orange); color: white;">Artistic</span>
+                        <span class="badge" style="background-color: var(--orange); color: white;">Original</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="personality-card p-4 h-100" style="background-color: rgba(255,255,255,0.05); border-radius: 12px; border-bottom: 3px solid var(--orange);">
+                    <div class="mb-4">
+                        <i class="bi bi-shield-check fs-1" style="color: var(--orange);"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Reliable & Professional</h3>
+                    <p class="text-white-50 mb-3">We deliver on time and beyond expectation.</p>
+                    <p class="mb-0">Trust is earned through consistency. Our structured processes, transparent communication, and unwavering commitment to quality ensure that working with BE means peace of mind. We honor deadlines and exceed promises.</p>
+                    <div class="mt-4">
+                        <span class="badge me-2" style="background-color: var(--orange); color: white;">Accountable</span>
+                        <span class="badge me-2" style="background-color: var(--orange); color: white;">Consistent</span>
+                        <span class="badge" style="background-color: var(--orange); color: white;">Thorough</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="personality-card p-4 h-100" style="background-color: rgba(255,255,255,0.05); border-radius: 12px; border-bottom: 3px solid var(--orange);">
+                    <div class="mb-4">
+                        <i class="bi bi-lightning-charge fs-1" style="color: var(--orange);"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Modern & Bold</h3>
+                    <p class="text-white-50 mb-3">On-trend, timeless, and unapologetically fresh.</p>
+                    <p class="mb-0">We embrace the cutting edge while understanding what endures. Our aesthetic is contemporary but calculated—we create work that feels current today and relevant tomorrow. We're not afraid to make statements or take calculated risks.</p>
+                    <div class="mt-4">
+                        <span class="badge me-2" style="background-color: var(--orange); color: white;">Contemporary</span>
+                        <span class="badge me-2" style="background-color: var(--orange); color: white;">Dynamic</span>
+                        <span class="badge" style="background-color: var(--orange); color: white;">Impactful</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <p class="fst-italic text-white-50">These traits aren't buzzwords—they're the foundation of everything we design, deliver, and defend.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Brand Archetype Section -->
+<section class="d-flex align-items-center text-white" style="min-height: 100vh; background-color: var(--orange); font-family: var(--font-primary);">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-4 fw-bold mb-4" style="font-family: var(--font-secondary);">Brand Archetype</h2>
+                <p class="lead mb-5">We don't do placeholders. We build icons. Your brand deserves to lead, not follow.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5 mb-5 mb-lg-0">
+                <div class="archetype-card p-5 h-100 text-center" style="background-color: rgba(0,0,0,0.1); border-radius: 16px;">
+                    <div class="mb-4">
+                        <i class="bi bi-stars fs-1"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold mb-3" style="font-family: var(--font-secondary);">The Creator</h3>
+                    <p class="text-white-50 mb-4">Inspired originality, limitless potential.</p>
+                    <hr class="my-4" style="opacity: 0.2;">
+                    <p class="mb-3">As Creators, we bring form to vision and substance to imagination. We believe in the power of innovation to transform industries and experiences.</p>
+                    <p class="mb-4">Our Creator archetype drives us to:</p>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2"></i> Challenge existing paradigms</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2"></i> Develop unique, tailored solutions</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2"></i> Encourage authentic self-expression</li>
+                        <li><i class="bi bi-check2-circle me-2"></i> Build brands with artistic integrity</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-5">
+                <div class="archetype-card p-5 h-100 text-center" style="background-color: rgba(0,0,0,0.1); border-radius: 16px;">
+                    <div class="mb-4">
+                        <i class="bi bi-trophy fs-1"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold mb-3" style="font-family: var(--font-secondary);">The Ruler</h3>
+                    <p class="text-white-50 mb-4">Controlled excellence. Professional dominance.</p>
+                    <hr class="my-4" style="opacity: 0.2;">
+                    <p class="mb-3">As Rulers, we establish order from chaos and set standards that elevate the entire industry. We create brands that command respect and authority.</p>
+                    <p class="mb-4">Our Ruler archetype empowers us to:</p>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2"></i> Deliver premium, refined experiences</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2"></i> Create systems that ensure consistency</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2"></i> Establish brands as industry leaders</li>
+                        <li><i class="bi bi-check2-circle me-2"></i> Build legacies that stand the test of time</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <p class="fw-semibold fs-4 mb-3">Mediocre branding? Could never be us.</p>
+                <p class="text-white-50">Every project is a canvas. Every execution is a legacy. We combine the Creator's innovation with the Ruler's excellence to deliver brands that don't just participate—they dominate.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Target Audience Section -->
+<section class="d-flex align-items-center" style="min-height: 100vh; background-color: var(--beige); font-family: var(--font-primary);">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-4 fw-bold mb-4" style="font-family: var(--font-secondary); color: var(--charcoal);">Target Audience</h2>
+                <p class="lead mb-5" style="color: var(--charcoal);">We partner with visionaries who understand that brand is business—not just an afterthought. Our solutions are crafted for those who refuse to blend in.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="audience-card p-4 bg-white shadow h-100" style="border-radius: 12px; border-top: 4px solid var(--orange);">
+                    <div class="mb-4 text-center">
+                        <div class="audience-icon p-3 d-inline-block" style="background-color: rgba(255, 106, 0, 0.1); border-radius: 50%;">
+                            <i class="bi bi-building fs-1" style="color: var(--orange);"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-3 text-center" style="color: var(--charcoal);">Corporate & Government</h3>
+                    <p class="text-muted mb-4 text-center">Brand control at scale. Trusted solutions for enterprise-level impact.</p>
+                    <hr class="my-4">
+                    <h5 class="fw-bold mb-3" style="color: var(--charcoal);">We serve:</h5>
+                    <ul class="mb-4" style="color: var(--charcoal);">
+                        <li class="mb-2">Enterprise organizations seeking cohesive brand implementations</li>
+                        <li class="mb-2">Government agencies requiring reliable, compliant merchandise</li>
+                        <li class="mb-2">Corporate teams managing nationwide or global presence</li>
+                        <li>Large-scale organizations during mergers or rebrands</li>
+                    </ul>
+                    <h5 class="fw-bold mb-3" style="color: var(--charcoal);">Key offerings:</h5>
+                    <ul class="mb-0" style="color: var(--charcoal);">
+                        <li class="mb-2">Scalable merchandise programs</li>
+                        <li class="mb-2">Bulk order fulfillment systems</li>
+                        <li class="mb-2">Brand standards implementation</li>
+                        <li>Enterprise-grade quality control</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="audience-card p-4 bg-white shadow h-100" style="border-radius: 12px; border-top: 4px solid var(--orange);">
+                    <div class="mb-4 text-center">
+                        <div class="audience-icon p-3 d-inline-block" style="background-color: rgba(255, 106, 0, 0.1); border-radius: 50%;">
+                            <i class="bi bi-rocket-takeoff fs-1" style="color: var(--orange);"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-3 text-center" style="color: var(--charcoal);">Entrepreneurs & SMEs</h3>
+                    <p class="text-muted mb-4 text-center">Launch strong. Build fast. Own your space with strategic branding.</p>
+                    <hr class="my-4">
+                    <h5 class="fw-bold mb-3" style="color: var(--charcoal);">We serve:</h5>
+                    <ul class="mb-4" style="color: var(--charcoal);">
+                        <li class="mb-2">Startups establishing initial brand presence</li>
+                        <li class="mb-2">Small businesses ready to professionalize their image</li>
+                        <li class="mb-2">Growing companies preparing for next-stage scaling</li>
+                        <li>Solopreneurs building personal brands with impact</li>
+                    </ul>
+                    <h5 class="fw-bold mb-3" style="color: var(--charcoal);">Key offerings:</h5>
+                    <ul class="mb-0" style="color: var(--charcoal);">
+                        <li class="mb-2">Comprehensive brand development</li>
+                        <li class="mb-2">Launch-ready merchandise packages</li>
+                        <li class="mb-2">Growth-focused brand strategy</li>
+                        <li>Scalable systems that grow with you</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="audience-card p-4 bg-white shadow h-100" style="border-radius: 12px; border-top: 4px solid var(--orange);">
+                    <div class="mb-4 text-center">
+                        <div class="audience-icon p-3 d-inline-block" style="background-color: rgba(255, 106, 0, 0.1); border-radius: 50%;">
+                            <i class="bi bi-graph-up-arrow fs-1" style="color: var(--orange);"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-3 text-center" style="color: var(--charcoal);">Established Brands</h3>
+                    <p class="text-muted mb-4 text-center">Evolve and expand. We sharpen your presence for next-level success.</p>
+                    <hr class="my-4">
+                    <h5 class="fw-bold mb-3" style="color: var(--charcoal);">We serve:</h5>
+                    <ul class="mb-4" style="color: var(--charcoal);">
+                        <li class="mb-2">Companies undergoing strategic rebranding</li>
+                        <li class="mb-2">Established businesses refreshing their identity</li>
+                        <li class="mb-2">Brands expanding into new markets or audiences</li>
+                        <li>Organizations aligning internal and external branding</li>
+                    </ul>
+                    <h5 class="fw-bold mb-3" style="color: var(--charcoal);">Key offerings:</h5>
+                    <ul class="mb-0" style="color: var(--charcoal);">
+                        <li class="mb-2">Brand evolution strategies</li>
+                        <li class="mb-2">Premium merchandise collections</li>
+                        <li class="mb-2">Rebranding implementation</li>
+                        <li>Brand audit and optimization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <p class="lead mt-4" style="color: var(--charcoal);">You bring the vision. We bring the bold. Together, we build brand legacies.</p>
+                <a href="/services" class="btn btn-lg px-5 py-3 mt-3" style="background-color: var(--charcoal); color: white; transition: all 0.3s ease;">Explore Our Services</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Process Section -->
+<section class="d-flex align-items-center" style="min-height: 100vh; background-color: var(--beige); font-family: var(--font-primary);">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-4 fw-bold mb-4" style="font-family: var(--font-secondary); color: var(--charcoal);">Our Process</h2>
+                <p class="lead mb-5" style="color: var(--charcoal);">We've refined our approach to deliver exceptional results every time. Our structured methodology ensures nothing is left to chance.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="process-timeline position-relative">
+                    <div class="row g-0">
+                        <div class="col-md-6 offset-md-0 col-lg-5 offset-lg-1 mb-5">
+                            <div class="process-card p-4 bg-white shadow-sm h-100" style="border-radius: 12px; border-left: 5px solid var(--orange);">
+                                <h4 class="fw-bold mb-3" style="color: var(--charcoal);">01. Discovery</h4>
+                                <p class="mb-3" style="color: var(--charcoal);">We begin with comprehensive exploration—diving deep into your goals, audience, competitors, and unique market position. This foundational phase informs everything that follows.</p>
+                                <p class="mb-0 text-muted fst-italic">What you can expect: In-depth consultations, market analysis, strategic goal-setting, and brand positioning.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 offset-md-6 col-lg-5 offset-lg-6 mb-5">
+                            <div class="process-card p-4 bg-white shadow-sm h-100" style="border-radius: 12px; border-left: 5px solid var(--orange);">
+                                <h4 class="fw-bold mb-3" style="color: var(--charcoal);">02. Strategy</h4>
+                                <p class="mb-3" style="color: var(--charcoal);">Based on discovery insights, we craft the strategic framework that will guide your brand's development. This includes positioning, messaging architecture, and tactical recommendations.</p>
+                                <p class="mb-0 text-muted fst-italic">What you can expect: Brand strategy documents, audience personas, competitive advantage analysis, and communication frameworks.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 offset-md-0 col-lg-5 offset-lg-1 mb-5">
+                            <div class="process-card p-4 bg-white shadow-sm h-100" style="border-radius: 12px; border-left: 5px solid var(--orange);">
+                                <h4 class="fw-bold mb-3" style="color: var(--charcoal);">03. Creation</h4>
+                                <p class="mb-3" style="color: var(--charcoal);">With strategic direction set, our creative team develops the visual and verbal identity that will bring your brand to life—from logos and color schemes to typography and tone of voice.</p>
+                                <p class="mb-0 text-muted fst-italic">What you can expect: Visual identity development, messaging creation, design concepts, and creative presentations.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 offset-md-6 col-lg-5 offset-lg-6 mb-5">
+                            <div class="process-card p-4 bg-white shadow-sm h-100" style="border-radius: 12px; border-left: 5px solid var(--orange);">
+                                <h4 class="fw-bold mb-3" style="color: var(--charcoal);">04. Implementation</h4>
+                                <p class="mb-3" style="color: var(--charcoal);">Your approved brand elements are meticulously executed across all chosen platforms and touchpoints—digital assets, merchandise, packaging, environments, and beyond.</p>
+                                <p class="mb-0 text-muted fst-italic">What you can expect: Production management, quality control, delivery coordination, and implementation support.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 offset-md-0 col-lg-5 offset-lg-1">
+                            <div class="process-card p-4 bg-white shadow-sm h-100" style="border-radius: 12px; border-left: 5px solid var(--orange);">
+                                <h4 class="fw-bold mb-3" style="color: var(--charcoal);">05. Measurement</h4>
+                                <p class="mb-3" style="color: var(--charcoal);">We track performance against established KPIs, gathering insights that inform ongoing optimization and future initiatives. Our relationship continues long after delivery.</p>
+                                <p class="mb-0 text-muted fst-italic">What you can expect: Performance analytics, stakeholder feedback collection, ROI assessments, and strategic adaptation.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="d-flex align-items-center text-white justify-content-center text-center" style="min-height: 100vh; background: linear-gradient(rgba(43, 43, 43, 0.7), rgba(255, 106, 0, 0.5)), url('/images/about/about-theater.webp') center center / cover no-repeat; background-attachment: fixed;">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h2 class="display-3 fw-bold mb-4" style="color:var(--orange);">Let's Create Something Amazing Together</h2>
+                <p class="lead fs-3 mb-5">We're more than a branding agency. We're your creative partner in domination.</p>
+                <div class="mb-5">
+                    <p class="fs-5">Every brand has a story. Let's make yours unforgettable.</p>
+                    <p class="fs-5 mb-5">Whether you're launching from scratch, evolving your existing brand, or need high-impact merchandise that resonates—we're ready to elevate your presence.</p>
+                </div>
+                <div class="row justify-content-center mb-5">
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <div class="p-4 rounded-4" style="background-color: rgba(255,255,255,0.1);">
+                            <i class="bi bi-envelope-paper fs-1 mb-3"></i>
+                            <h4 class="fw-bold mb-3">Connect With Us</h4>
+                            <p class="mb-1">hello@be.com</p>
+                            <p class="mb-0">(555) 123-4567</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <div class="p-4 rounded-4" style="background-color: rgba(255,255,255,0.1);">
+                            <i class="bi bi-geo-alt fs-1 mb-3"></i>
+                            <h4 class="fw-bold mb-3">Visit Our Studio</h4>
+                            <p class="mb-1">123 Creative Way</p>
+                            <p class="mb-0">Design District, CA 90210</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-4" style="background-color: rgba(255,255,255,0.1);">
+                            <i class="bi bi-clock fs-1 mb-3"></i>
+                            <h4 class="fw-bold mb-3">Working Hours</h4>
+                            <p class="mb-1">Monday-Friday: 9am-6pm</p>
+                            <p class="mb-0">Weekends: By appointment</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <a href="/contact" class="btn btn-light btn-lg px-5 py-3 me-3 mb-3 mb-md-0">Start Your Project</a>
+                    <a href="/portfolio" class="btn btn-outline-light btn-lg px-5 py-3">View Our Work</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- End of About Us Page --> 

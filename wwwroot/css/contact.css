@@ -1,0 +1,307 @@
+﻿/* Contact Hero Section */
+#contactHero {
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+}
+
+    #contactHero:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+    }
+
+
+
+.hero-content {
+    max-width: 1000px;
+    padding: 4rem 2rem;
+}
+
+    .hero-content h1 {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+.highlight {
+    color: #FF6A00;
+    position: relative;
+    display: inline-block;
+}
+
+    .highlight:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background-color: #FF6A00;
+    }
+
+.hero-lead {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.hero-tagline {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.tagline-item {
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.tagline-divider {
+    margin: 0 10px;
+    color: #FF6A00;
+}
+
+.hero-description p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+/* Contact Form Section */
+#contactForm {
+    padding: 4rem 2rem;
+    background-color: #fff;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.col-lg-5 {
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+    padding: 0 15px;
+}
+
+.col-lg-7 {
+    flex: 0 0 58.333333%;
+    max-width: 58.333333%;
+    padding: 0 15px;
+}
+
+
+
+/* Contact Form Styles */
+.contact-form {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+    .contact-form h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+    }
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: #FF6A00;
+    }
+
+textarea.form-control {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.btn-submit {
+    background-color: #FF6A00;
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-submit:hover {
+        background-color: #e65f00;
+    }
+
+/* Form Selection Tabs */
+.form-selection {
+    display: flex;
+    margin-bottom: 30px;
+    background: #EEEBE3;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.form-tab {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+    .form-tab.active {
+        background-color: #FF6A00;
+        color: #fff;
+    }
+
+/* Back Button */
+.back-button {
+    background-color: transparent;
+    border: 1px solid #2B2B2B;
+    color: #2B2B2B;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+    .back-button:hover {
+        background-color: #2B2B2B;
+        color: #fff;
+    }
+
+/* Form Steps */
+.form-step {
+    display: none;
+}
+
+    .form-step.active {
+        display: block;
+    }
+
+/* File Upload */
+.file-upload {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+}
+
+    .file-upload input[type="file"] {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+.file-upload-btn {
+    display: inline-block;
+    padding: 12px 15px;
+    background-color: #EEEBE3;
+    color: #2B2B2B;
+    border: 1px dashed #2B2B2B;
+    border-radius: 4px;
+    text-align: center;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.file-upload:hover .file-upload-btn {
+    background-color: #e5e1d7;
+}
+
+.file-name {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Radio Options */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.radio-option {
+    margin-right: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+    .radio-option input[type="radio"] {
+        margin-right: 8px;
+        accent-color: #FF6A00;
+    }
+
+.form-container {
+    display: none;
+}
+
+    .form-container.active {
+        display: block;
+    }
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .col-lg-5, .col-lg-7 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .col-lg-5 {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 3rem;
+    }
+
+    .hero-lead {
+        font-size: 1.2rem;
+    }
+
+    #contactHero {
+        padding: 100px 0;
+    }
+
+    #contactForm {
+        padding: 60px 0;
+    }
+}
