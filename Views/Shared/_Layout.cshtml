@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/header.css" />
     <link rel="stylesheet" href="~/css/sidebar.css" />
+    <link rel="stylesheet" href="~/css/index.css" />
 </head>
 <body>
     <div class="sidebar">
@@ -63,6 +64,53 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sections = document.querySelectorAll("section");
+            const scrollDotsContainer = document.querySelector(".scroll-dots");
+
+            // Clear existing static dots (optional, safe reset)
+            scrollDotsContainer.innerHTML = "";
+
+            // Create a dot for each section and link to it
+            sections.forEach((section, index) => {
+                const dot = document.createElement("div");
+                dot.classList.add("dot");
+
+                // Optional: Add click scroll behavior
+                dot.addEventListener("click", () => {
+                    section.scrollIntoView({ behavior: "smooth", block: "start" });
+                });
+
+                scrollDotsContainer.appendChild(dot);
+            });
+        });
+    </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const track = document.querySelector(".carousel-track");
+        const prev = document.querySelector(".carousel-nav.prev");
+        const next = document.querySelector(".carousel-nav.next");
+        const cards = document.querySelectorAll(".carousel-card");
+        const cardWidth = cards[0].offsetWidth + 32; // 32px = gap
+
+        let position = 0;
+
+        prev.addEventListener("click", () => {
+            if (position > 0) {
+                position--;
+                track.style.transform = `translateX(-${cardWidth * position}px)`;
+            }
+        });
+
+        next.addEventListener("click", () => {
+            if (position < cards.length - 4) {
+                position++;
+                track.style.transform = `translateX(-${cardWidth * position}px)`;
+            }
+        });
+    });
+</script>
     @await RenderSectionAsync("Scripts", required: false)
     @RenderSection("Styles", required: false)
 </body>

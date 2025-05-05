@@ -1,8 +1,246 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿<!-- Hero-Section -->
+<section id="hero-video-wrapper" style="position: relative; width: auto; height: 100vh; overflow: hidden; margin: 0; padding: 0;">
+    <!-- Persistent overlay -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(43, 43, 43, 0.4); z-index: 2;"></div>
+    <!-- Hero content -->
+    <div style="position: relative; z-index: 3; height: 100%; display: flex; align-items: center; padding-left: 6vw; text-align: left;">
+        <div style="max-width: 1400px;">
+            <p style="font-family: Inter, sans-serif; font-weight: bold; color: #FF6A00; font-size: 1.5rem; margin-bottom: 1rem; white-space: nowrap;">
+                WE MAKE YOU WHO YOU BE.
+            </p>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; line-height: 1.4; font-weight: 500; color: white; margin-bottom: 2rem;">
+                Bold branding. High-quality customized merchandise.<br />
+                Unforgettable impact.
+            </h1>
+            <a href="/shop" class="hero-cta-button">Shop now.</a>
+        </div>
+    </div>
+    <!-- Video elements -->
+    <video id="video1" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; opacity: 1; transition: opacity 2s ease-in-out;">
+        <source src="/videos/home/greek-marvel-1.mp4" type="video/mp4" />
+    </video>
+    <video id="video2" muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; opacity: 0; transition: opacity 2s ease-in-out;">
+        <source src="/videos/home/greek-marvel-2.mp4" type="video/mp4" />
+    </video>
+</section>
+
+<!-- Best Sellers Section -->
+<section id="best-sellers" style="padding: 4rem 2rem; text-align: center;">
+    <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; color: #2B2B2B; font-weight: 500; margin-bottom: 1.25rem;">
+        Best Sellers
+    </h2>
+    <p style="font-family: Inter, sans-serif; color: #FF6A00; font-weight: 700; font-size: 1rem; margin-bottom: 1rem;">
+        YOUR BRAND. YOUR TOOLS. YOUR STATEMENT.
+    </p>
+    <p style="font-family: Inter, sans-serif; font-size: 1rem; color: #2B2B2B; max-width: 900px; margin: 0 auto 3rem auto;">
+        Shop our best-selling corporate stationery and branded essentials. Designed for professionals who mean business.
+    </p>
+
+    <!-- Carousel embedded inside Best Sellers -->
+    <div class="carousel-container">
+        <button class="carousel-nav prev">&#8592;</button>
+        <div class="carousel-track-wrapper">
+            <div class="carousel-track">
+                <div class="carousel-card">
+                    <img src="https://placehold.co/300x300" alt="Product 1" />
+                    <div class="product-name">Custom Business Cards</div>
+                    <div class="product-footer">
+                        <span class="price">$20.00</span>
+                        <button class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i> Add to cart
+                        </button>
+                    </div>
+                </div>
+                <div class="carousel-card">
+                    <img src="https://placehold.co/300x300" alt="Product 1" />
+                    <div class="product-name">Custom Business Cards</div>
+                    <div class="product-footer">
+                        <span class="price">$20.00</span>
+                        <button class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i> Add to cart
+                        </button>
+                    </div>
+                </div>
+                <div class="carousel-card">
+                    <img src="https://placehold.co/300x300" alt="Product 1" />
+                    <div class="product-name">Custom Business Cards</div>
+                    <div class="product-footer">
+                        <span class="price">$20.00</span>
+                        <button class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i> Add to cart
+                        </button>
+                    </div>
+                </div>
+                <div class="carousel-card">
+                    <img src="https://placehold.co/300x300" alt="Product 1" />
+                    <div class="product-name">Custom Business Cards</div>
+                    <div class="product-footer">
+                        <span class="price">$20.00</span>
+                        <button class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i> Add to cart
+                        </button>
+                    </div>
+                </div>
+                <div class="carousel-card">
+                    <img src="https://placehold.co/300x300" alt="Product 1" />
+                    <div class="product-name">Custom Business Cards</div>
+                    <div class="product-footer">
+                        <span class="price">$20.00</span>
+                        <button class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i> Add to cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-nav next">&#8594;</button>
+    </div>
+</section>
+
+<section id="why-choose-us" style="padding: 4rem 2rem; text-align: center;">
+    <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; color: #2B2B2B; font-weight: 500; margin-bottom: 1.25rem;">
+        Why Choose Us?
+    </h2>
+    <p style="font-family: Inter, sans-serif; color: #FF6A00; font-weight: 700; font-size: 1rem; margin-bottom: 2rem;">
+        BRANDING THAT DEMANDS ATTENTION. QUALITY THAT SPEAKS FOR ITSELF.
+    </p>
+    <p style="font-family: Inter, sans-serif; font-size: 1rem; color: #2B2B2B; max-width: 900px; margin: 0 auto 3rem auto;">
+        We don’t just create stationery—we craft brand experiences. Every item we design is built to make an impact, ensuring your business is seen, remembered, and respected.
+    </p>
+
+    <div style="max-width: 900px; margin: 0 auto; text-align: left; display: flex; flex-direction: column; gap: 1.5rem;">
+        <p style="font-family: Inter, sans-serif; font-size: 1rem; color: #2B2B2B;">
+            Confidence that Stands Out: Our bold designs ensure your brand leaves a
+            <span style="font-weight: bold; font-family: 'Playfair Display', serif; background-image: url('/images/scribble-orange.svg'); background-repeat: no-repeat; background-position: center bottom; background-size: contain; padding-bottom: 0.2rem;">
+                mark.
+            </span>
+        </p>
+        <p style="font-family: Inter, sans-serif; font-size: 1rem; color: #2B2B2B;">
+            Quality You Can Trust: Premium materials, meticulous craftsmanship, and lasting
+            <span style="font-weight: bold; font-family: 'Playfair Display', serif; background-image: url('/images/scribble-orange.svg'); background-repeat: no-repeat; background-position: center bottom; background-size: contain; padding-bottom: 0.2rem;">
+                impact.
+            </span>
+        </p>
+        <p style="font-family: Inter, sans-serif; font-size: 1rem; color: #2B2B2B;">
+            Customization Without Limits: Your brand, your vision—
+            <span style="font-weight: bold; font-family: 'Playfair Display', serif; background-image: url('/images/scribble-orange.svg'); background-repeat: no-repeat; background-position: center bottom; background-size: contain; padding-bottom: 0.2rem;">
+                brought to life.
+            </span>
+        </p>
+        <div>
+            <a href="/contact" class="branding-btn">Start Your Branding Journey.</a>
+        </div>
+    </div>
+</section>
+
+<section id="testimonials" style="padding: 4rem 2rem; text-align: center; color: #2B2B2B; font-family: 'Inter', sans-serif;">
+    <div class="testimonials-container" style="max-width: 1240px; margin: 0 auto;">
+        <h2 class="testimonials-heading" style="font-family: 'Playfair Display', serif; font-size: 4rem; text-align: center; margin-bottom: 3rem; font-weight: 500; color: #2B2B2B;">What They're Saying</h2>
+
+        <div class="testimonial-list" style="display: flex; flex-direction: column; gap: 3rem;">
+            <div class="testimonial" style="background-color: white; border-left: 0.5rem solid #FF6A00; padding: 2rem; border-radius: 1rem; box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.05); text-align: left; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <div class="testimonial-header" style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem;">
+                    <img src="https://placehold.co/60x60" alt="Kayla M." class="testimonial-avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #2B2B2B; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div class="testimonial-info" style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span class="testimonial-name" style="font-weight: 700; font-size: 1.125rem; font-family: 'Playfair Display', serif; color: #2B2B2B;">Kayla M.</span>
+                        <span class="testimonial-role" style="font-size: 0.875rem; color: #666; font-family: 'Inter', sans-serif;">Creative Director</span>
+                        <div class="testimonial-stars" style="font-size: 1rem; color: #FF6A00; letter-spacing: 0.125rem;">
+                            &#9733; &#9733; &#9733; &#9733; &#9734;
+                        </div>
+                    </div>
+                </div>
+                <p class="testimonial-text" style="font-size: 1.125rem; line-height: 1.75; font-style: italic; color: #2B2B2B; font-family: 'Inter', sans-serif; margin-top: 1rem; position: relative; padding-left: 0.5rem;">
+                    "The quality blew me away. If this is pre-launch, I can't wait to see what's next."
+                </p>
+            </div>
+
+            <div class="testimonial" style="background-color: white; border-left: 0.5rem solid #FF6A00; padding: 2rem; border-radius: 1rem; box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.05); text-align: left; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <div class="testimonial-header" style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem;">
+                    <img src="https://placehold.co/60x60" alt="Jordan S." class="testimonial-avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #2B2B2B; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div class="testimonial-info" style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span class="testimonial-name" style="font-weight: 700; font-size: 1.125rem; font-family: 'Playfair Display', serif; color: #2B2B2B;">Jordan S.</span>
+                        <span class="testimonial-role" style="font-size: 0.875rem; color: #666; font-family: 'Inter', sans-serif;">Brand Strategist</span>
+                        <div class="testimonial-stars" style="font-size: 1rem; color: #FF6A00; letter-spacing: 0.125rem;">
+                            &#9733; &#9733; &#9733; &#9733; &#9733;
+                        </div>
+                    </div>
+                </div>
+                <p class="testimonial-text" style="font-size: 1.125rem; line-height: 1.75; font-style: italic; color: #2B2B2B; font-family: 'Inter', sans-serif; margin-top: 1rem; position: relative; padding-left: 0.5rem;">
+                    "We've worked with a lot of suppliers, but BE. feels like a creative partner, not a vendor."
+                </p>
+            </div>
+
+            <div class="testimonial" style="background-color: white; border-left: 0.5rem solid #FF6A00; padding: 2rem; border-radius: 1rem; box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.05); text-align: left; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <div class="testimonial-header" style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem;">
+                    <img src="https://placehold.co/60x60" alt="Alex R." class="testimonial-avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #2B2B2B; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div class="testimonial-info" style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span class="testimonial-name" style="font-weight: 700; font-size: 1.125rem; font-family: 'Playfair Display', serif; color: #2B2B2B;">Alex R.</span>
+                        <span class="testimonial-role" style="font-size: 0.875rem; color: #666; font-family: 'Inter', sans-serif;">Startup Founder</span>
+                        <div class="testimonial-stars" style="font-size: 1rem; color: #FF6A00; letter-spacing: 0.125rem;">
+                            &#9733; &#9733; &#9733; &#9733; &#9733;
+                        </div>
+                    </div>
+                </div>
+                <p class="testimonial-text" style="font-size: 1.125rem; line-height: 1.75; font-style: italic; color: #2B2B2B; font-family: 'Inter', sans-serif; margin-top: 1rem; position: relative; padding-left: 0.5rem;">
+                    "Minimal, bold, and super clean — everything about BE. screams premium."
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about-be" style="padding: 4rem 2rem; color: #2B2B2B; background-color: #FF6A00; font-family: 'Inter', sans-serif;">
+    <div class="about-container" style="max-width: 1240px; margin: 0 auto;">
+        <h2 class="about-heading" style="font-family: 'Playfair Display', serif; color: #2B2B2B; font-size: 2.5rem; text-align: center; margin-bottom: 2rem; font-weight: 500;">Our Story</h2>
+        <p class="about-lead" style="text-align: center; font-size: 1.25rem; font-weight: 700; color: #EEEBE3; margin-bottom: 2rem; font-family: 'Inter', sans-serif;">BE. is more than a brand — it's a mindset.</p>
+        <p class="about-body" style="font-size: 1.125rem; line-height: 1.9; margin-bottom: 1.5rem; text-align: center; max-width: 900px; margin-left: auto; margin-right: auto; color: #2B2B2B; font-family: 'Inter', sans-serif;">
+            We started BE. with a simple goal: to empower individuals and businesses to show up bold, clean, and unforgettable.
+            Born from the idea that branding should never blend in, we built BE. to be the visual megaphone for people who aren't afraid to stand out.
+        </p>
+        <p class="about-body" style="font-size: 1.125rem; line-height: 1.9; margin-bottom: 1.5rem; text-align: center; max-width: 900px; margin-left: auto; margin-right: auto; color: #2B2B2B; font-family: 'Inter', sans-serif;">
+            Every design, every product, and every detail is crafted with intention. Whether you're a creator, a founder, or a dreamer building your next big thing — we're here to help you be loud, be seen, and be remembered.
+        </p>
+        <p class="about-signature" style="font-family: 'Playfair Display', serif; padding-right: 0.5rem; font-style: italic; font-size: 1.125rem; text-align: right; margin-top: 3rem; margin-right: 4.5rem; color: #EEEBE3; display: inline-block; float: right;">— The BE. Team</p>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        const videoSources = [
+            "/videos/home/greek-marvel-1.mp4",
+            "/videos/home/greek-marvel-2.mp4",
+            "/videos/home/greek-marvel-3.mp4",
+            "/videos/home/greek-marvel-4.mp4"
+        ];
+
+        let index = 0;
+        let current = document.getElementById("video1");
+        let next = document.getElementById("video2");
+
+        function playNextVideo() {
+            index = (index + 1) % videoSources.length;
+
+            // Update next video source cleanly
+            const source = next.querySelector("source");
+            source.setAttribute("src", videoSources[index]);
+            next.load();
+
+            next.oncanplaythrough = () => {
+                next.play();
+
+                current.style.opacity = 0;
+                next.style.opacity = 1;
+
+                // Swap refs
+                const temp = current;
+                current = next;
+                next = temp;
+            };
+        }
+
+        // Attach listener to both video elements
+        current.addEventListener("ended", playNextVideo);
+        next.addEventListener("ended", playNextVideo);
+    </script>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
