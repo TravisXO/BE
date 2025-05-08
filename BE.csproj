@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\register\" />
-    <Folder Include="wwwroot\products\bags-backpacks\" />
+    <Folder Include="wwwroot\products\" />
     <Folder Include="wwwroot\videos\home\" />
   </ItemGroup>
 
