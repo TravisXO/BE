@@ -14,8 +14,7 @@
     <link rel="stylesheet" href="~/css/index.css" />
     <link rel="stylesheet" href="~/css/about.css" />
     <link rel="stylesheet" href="~/css/contact.css" />
-    <link rel="stylesheet" href="~/css/shop.css" />
-    <link rel="stylesheet" href="~/css/detail.css" />
+    <link rel="stylesheet" href="~/css/cart.css" />
 </head>
 <body>
     <div class="sidebar">
@@ -52,7 +51,9 @@
         </nav>
         <div class="nav-icons">
             @Html.Partial("_LoginPartial")
-            <i class="fa fa-shopping-cart"></i>
+            <a asp-controller="Cart" asp-action="Cart">
+                <i class="fa fa-shopping-cart"></i>
+            </a>
             <i class="fa fa-search"></i>
         </div>
     </header>
@@ -91,10 +92,10 @@
                     <div class="footer-column">
                         <h3 class="footer-heading">QUICK LINKS</h3>
                         <ul class="footer-links">
-                            <li><a href="#">Our Services</a></li>
-                            <li><a href="#">Portfolio</a></li>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Contact</a></li>
+                            <li><a asp-controller="Home" asp-action="Home">Home</a></li>
+                            <li><a asp-controller="Shop" asp-action="Shop">Shop</a></li>
+                            <li><a asp-controller="Home" asp-action="About">About Us</a></li>
+                            <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
                         </ul>
                     </div>
 
