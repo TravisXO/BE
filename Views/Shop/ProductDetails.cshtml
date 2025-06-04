@@ -1,0 +1,913 @@
+﻿@model BE.Models.ProductViewModel
+@using System.Text.Json;
+@using System.Globalization;
+@using System.Text.RegularExpressions; 
+@using System.IO; 
+@using System;
+@using System.Linq; 
+@using System.Collections.Generic;
+
+@{
+    ViewData["Title"] = Model.ProductName;
+
+    // --- Price Tiers from PricingTiers (new format) ---
+    List<(int minQuantity, int maxQuantity, decimal price)> newPricingTiers = new List<(int, int, decimal)>();
+    JsonElement pricingTiersElement;
+    if (Model.AdditionalInfo.ValueKind == JsonValueKind.Object &&
+        Model.AdditionalInfo.TryGetProperty("PricingTiers", out pricingTiersElement) &&
+        pricingTiersElement.ValueKind == JsonValueKind.Object)
+    {
+        foreach (var prop in pricingTiersElement.EnumerateObject())
+        {
+            var rangeString = prop.Name; // e.g., "1 - 499"
+            var priceString = prop.Value.GetString(); // e.g., "13.72"
+
+            if (!string.IsNullOrWhiteSpace(rangeString) && !string.IsNullOrWhiteSpace(priceString))
+            {
+                var parts = rangeString.Split('-').Select(s => s.Trim()).ToList();
+                int minQ = 0;
+                int maxQ = 0;
+                if (parts.Count == 2 && int.TryParse(parts[0], out minQ) && int.TryParse(parts[1], out maxQ))
+                {
+                    if (decimal.TryParse(priceString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal price))
+                    {
+                        newPricingTiers.Add((minQ, maxQ, price));
+                    }
+                }
+                else if (parts.Count == 1 && int.TryParse(parts[0], out minQ)) // Handle single quantity tiers like "1"
+                {
+                     if (decimal.TryParse(priceString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal price))
+                    {
+                        newPricingTiers.Add((minQ, minQ, price)); // Use minQ for maxQ as well for single quantity
+                    }
+                }
+            }
+        }
+    }
+    // Sort newPricingTiers by minQuantity ascending
+    newPricingTiers = newPricingTiers.OrderBy(t => t.minQuantity).ToList();
+
+
+    // --- Price Tiers from AdditionalInfo (old format, fallback if newPricingTiers is empty) ---
+    List<(int quantity, decimal price)> oldPriceTiers = new List<(int quantity, decimal price)>();
+    JsonElement oldPriceTiersElement;
+    if (!newPricingTiers.Any() && Model.AdditionalInfo.ValueKind == JsonValueKind.Object &&
+        Model.AdditionalInfo.TryGetProperty("PriceTiers", out oldPriceTiersElement) &&
+        oldPriceTiersElement.ValueKind == JsonValueKind.Array)
+    {
+        foreach (var tierElement in oldPriceTiersElement.EnumerateArray())
+        {
+            if (tierElement.ValueKind == JsonValueKind.Object &&
+                tierElement.TryGetProperty("quantity", out JsonElement quantityElement) && quantityElement.ValueKind == JsonValueKind.Number &&
+                tierElement.TryGetProperty("price", out JsonElement priceElement) && priceElement.ValueKind == JsonValueKind.Number)
+            {
+                oldPriceTiers.Add((quantityElement.GetInt32(), priceElement.GetDecimal()));
+            }
+        }
+    }
+    oldPriceTiers = oldPriceTiers.OrderBy(t => t.quantity).ToList();
+
+
+    // Define known colors for extraction from image URLs
+    var knownColours = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "Red", "Blue", "Green", "Black", "White", "Yellow", "Purple", "Orange",
+        "Grey", "Gray", "Pink", "Brown", "Beige", "Cyan", "Magenta", "Teal",
+        "Maroon", "Navy", "Fuchsia", "Lime", "Olive", "Silver", "Gold",
+        "Transparent", "Clear"
+    };
+
+    // Helper function to extract colors from image URLs
+    Func<string, HashSet<string>, IEnumerable<string>> ExtractColorWordsFromUrl = (url, colorsSet) =>
+    {
+        if (string.IsNullOrWhiteSpace(url)) return Enumerable.Empty<string>();
+        try
+        {
+            var uri = new Uri(url);
+            var filename = System.IO.Path.GetFileNameWithoutExtension(uri.LocalPath);
+            var potentialWords = Regex.Split(filename, @"[-_\s%]+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            return potentialWords
+                .Select(word => Regex.Replace(word, @"[^a-zA-Z]", ""))
+                .Where(cleanedWord => colorsSet.Contains(cleanedWord));
+        }
+        catch (UriFormatException)
+        {
+            return Enumerable.Empty<string>();
+        }
+    };
+
+    // Extract Colours for display - prioritize from Variants, then GalleryImages URLs, then AdditionalInfo
+    HashSet<string> uniqueAvailableColours = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+    // Try to get colors from Variants first
+    JsonElement variantsElement;
+    if (Model.AdditionalInfo.ValueKind == JsonValueKind.Object &&
+        Model.AdditionalInfo.TryGetProperty("Variants", out variantsElement) &&
+        variantsElement.ValueKind == JsonValueKind.Object)
+    {
+        foreach (var variantProp in variantsElement.EnumerateObject())
+        {
+            uniqueAvailableColours.Add(variantProp.Name); // Add variant name (which is the color)
+        }
+    }
+
+    // Then, supplement/fallback from GalleryImages URLs
+    if (Model.GalleryImages != null && Model.GalleryImages.Any())
+    {
+        foreach (var imageUrl in Model.GalleryImages)
+        {
+            foreach (var extractedColor in ExtractColorWordsFromUrl(imageUrl, knownColours))
+            {
+                uniqueAvailableColours.Add(extractedColor);
+            }
+        }
+    }
+
+    // Finally, supplement/fallback from AdditionalInfo.Colours
+    JsonElement coloursElement;
+    if (Model.AdditionalInfo.ValueKind == JsonValueKind.Object &&
+        Model.AdditionalInfo.TryGetProperty("Colours", out coloursElement))
+    {
+        if (coloursElement.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var colourElement in coloursElement.EnumerateArray())
+            {
+                if (colourElement.ValueKind == JsonValueKind.String)
+                {
+                    uniqueAvailableColours.Add(colourElement.GetString()!);
+                }
+            }
+        }
+        else if (coloursElement.ValueKind == JsonValueKind.String)
+        {
+            uniqueAvailableColours.UnionWith(coloursElement.GetString()!.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()));
+        }
+    }
+
+    List<string> availableColours = uniqueAvailableColours.OrderBy(c => c).ToList();
+
+
+    // Extract Dimensions from AdditionalInfo
+    List<string> availableDimensions = new List<string>();
+    JsonElement dimensionsElement;
+    if (Model.AdditionalInfo.ValueKind == JsonValueKind.Object &&
+        Model.AdditionalInfo.TryGetProperty("Dimensions", out dimensionsElement) &&
+        dimensionsElement.ValueKind == JsonValueKind.Array) // Assuming "Dimensions" is an array of strings
+    {
+        foreach (var dimensionElement in dimensionsElement.EnumerateArray())
+        {
+            if (dimensionElement.ValueKind == JsonValueKind.String)
+            {
+                availableDimensions.Add(dimensionElement.GetString()!);
+            }
+        }
+    }
+    // If not found as array, try as a single string (comma separated)
+    else if (Model.AdditionalInfo.ValueKind == JsonValueKind.Object &&
+             Model.AdditionalInfo.TryGetProperty("Dimensions", out dimensionsElement) &&
+             dimensionsElement.ValueKind == JsonValueKind.String)
+    {
+        availableDimensions.AddRange(dimensionsElement.GetString()!.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()));
+    }
+
+    // Extract FullDescription
+    string fullDescription = "";
+    JsonElement fullDescriptionElement;
+    if (Model.AdditionalInfo.ValueKind == JsonValueKind.Object &&
+        Model.AdditionalInfo.TryGetProperty("FullDescription", out fullDescriptionElement) &&
+        fullDescriptionElement.ValueKind == JsonValueKind.String)
+    {
+        fullDescription = fullDescriptionElement.GetString() ?? "";
+    }
+    else if (!string.IsNullOrWhiteSpace(Model.FullDescription)) // Fallback to Model.FullDescription if it exists
+    {
+        fullDescription = Model.FullDescription;
+    }
+
+
+    // Extract BrandingGuide
+    string brandingGuideUrl = "";
+    JsonElement brandingGuideElement;
+    if (Model.AdditionalInfo.ValueKind == JsonValueKind.Object &&
+        Model.AdditionalInfo.TryGetProperty("BrandingGuide", out brandingGuideElement) &&
+        brandingGuideElement.ValueKind == JsonValueKind.String &&
+        !string.IsNullOrWhiteSpace(brandingGuideElement.GetString()) &&
+        !brandingGuideElement.GetString()!.Equals("N/A", StringComparison.OrdinalIgnoreCase))
+    {
+        brandingGuideUrl = brandingGuideElement.GetString()!;
+    }
+    else if (!string.IsNullOrWhiteSpace(Model.BrandingGuide) && !Model.BrandingGuide.Equals("N/A", StringComparison.OrdinalIgnoreCase)) // Fallback to Model.BrandingGuide
+    {
+        brandingGuideUrl = Model.BrandingGuide;
+    }
+
+
+    // Extract ShortDescription
+    List<string> shortDescriptionList = new List<string>();
+    JsonElement shortDescriptionElement;
+    if (Model.AdditionalInfo.ValueKind == JsonValueKind.Object &&
+        Model.AdditionalInfo.TryGetProperty("ShortDescription", out shortDescriptionElement) &&
+        shortDescriptionElement.ValueKind == JsonValueKind.Array)
+    {
+        foreach (var itemElement in shortDescriptionElement.EnumerateArray())
+        {
+            if (itemElement.ValueKind == JsonValueKind.String)
+            {
+                shortDescriptionList.Add(itemElement.GetString()!);
+            }
+        }
+    }
+    else if (Model.ShortDescription != null && Model.ShortDescription.Any()) // Fallback to Model.ShortDescription
+    {
+        shortDescriptionList = Model.ShortDescription;
+    }
+}
+
+<style>
+    /* General body font and color */
+    body {
+        font-family: 'Inter', sans-serif; /* Using Inter as a common modern font */
+        color: #2B2B2B; /* Dark text for readability */
+    }
+
+    /* Section padding */
+    #product-details-section {
+        padding: 4rem 4rem;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumb-item a {
+        color: #666;
+        text-decoration: none;
+    }
+    .breadcrumb-item.active {
+        color: #2B2B2B;
+        font-weight: 600;
+    }
+
+    /* Image Gallery */
+    .main-image-container img {
+        width: 100%;
+        height: auto; /* Maintain aspect ratio */
+        max-height: 500px; /* Limit max height for large images */
+        object-fit: contain; /* Ensure entire image is visible */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        background-color: #f8f8f8; /* Light background for images with transparency */
+        padding: 15px; /* Padding inside the image container */
+    }
+
+    .thumbnail-img {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        border-radius: 8px; /* Slightly more rounded corners */
+        transition: border-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        padding: 5px; /* Small padding for thumbnails */
+    }
+
+        .thumbnail-img.active, .thumbnail-img:hover {
+            border-color: #FFA600;
+            transform: scale(1.02); /* Slight zoom on hover/active */
+        }
+
+    /* Product Details Section */
+    h1 {
+        font-weight: 700;
+        color: #2B2B2B;
+        margin-bottom: 0.5rem; /* Reduced margin */
+        font-size: 2.2rem; /* Larger product name */
+    }
+
+    .rating {
+        margin-bottom: 1rem; /* Adjusted margin */
+    }
+    .rating .fa-star {
+        color: #FFA600;
+    }
+    .rating .fa-star-o {
+        color: #ccc;
+    }
+    .rating span {
+        font-size: 0.9em;
+        color: #666;
+        margin-left: 5px;
+    }
+
+    p strong {
+        color: #2B2B2B;
+    }
+    p span {
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .price-display {
+        font-size: 2.5em; /* Larger price */
+        font-weight: bold;
+        color: #2B2B2B; /* Changed to dark for contrast, but can be #FFA600 if preferred */
+        margin-bottom: 1.5rem; /* More space below price */
+    }
+    .price-display #currentProductPrice {
+        color: #FFA600; /* Highlighted price color */
+    }
+
+
+    /* Quantity Control */
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 5px; /* Space between buttons and input */
+    }
+    .quantity-control button {
+        background-color: #eeebe3;
+        color: #2B2B2B;
+        border: 1px solid #ddd;
+        border-radius: 6px; /* Slightly more rounded */
+        width: 40px; /* Slightly larger buttons */
+        height: 40px;
+        font-size: 1.3em; /* Larger +/- signs */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+    }
+    .quantity-control button:hover {
+        background-color: #e0e0e0;
+    }
+    .quantity-control input {
+        width: 70px; /* Wider input */
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin: 0; /* Remove default margin */
+        height: 40px;
+        font-size: 1.1em;
+        color: #2B2B2B;
+    }
+
+    /* Dropdowns (Color, Dimensions) */
+    .form-select {
+        border-radius: 6px;
+        border-color: #ddd;
+        color: #2B2B2B;
+        font-size: 1em;
+        height: 40px; /* Match height with quantity controls */
+    }
+    .form-select:focus {
+        border-color: #FFA600;
+        box-shadow: 0 0 0 0.25rem rgba(255, 166, 0, 0.25);
+    }
+
+    /* Add to Cart Button */
+    .add-to-cart-btn {
+        background-color: #FFA600;
+        color: white;
+        padding: 12px 25px; /* More padding */
+        border-radius: 8px;
+        font-size: 1.2em; /* Larger text */
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: background-color 0.2s ease-in-out;
+        border: none; /* Remove default border */
+    }
+    .add-to-cart-btn:hover {
+        background-color: #e69500; /* Darker orange on hover */
+        color: white; /* Ensure text remains white */
+    }
+    .add-to-cart-btn:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+    /* Social Icons */
+    .social-icon {
+        font-size: 24px;
+        margin-right: 15px; /* Increased spacing */
+        color: #666; /* Softer color */
+        transition: color 0.2s ease-in-out;
+    }
+    .social-icon:hover {
+        color: #FFA600;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 767.98px) {
+        #product-details-section {
+            padding: 2rem 1rem;
+        }
+        .main-image-container img {
+            max-height: 350px;
+        }
+        .thumbnail-img {
+            height: 60px;
+        }
+        h1 {
+            font-size: 1.8rem;
+        }
+        .price-display {
+            font-size: 2em;
+        }
+        .quantity-control button, .quantity-control input, .form-select {
+            height: 35px;
+            font-size: 1em;
+        }
+        .add-to-cart-btn {
+            padding: 10px 20px;
+            font-size: 1em;
+        }
+        .social-icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+    }
+
+    /* Specific styles for new content */
+    .product-description-section h5 {
+        font-weight: 600;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        color: #2B2B2B;
+    }
+    .product-description-section ul {
+        list-style: disc;
+        padding-left: 20px;
+        margin-bottom: 1rem;
+    }
+    .product-description-section ul li {
+        margin-bottom: 5px;
+        color: #444;
+    }
+    .product-description-section p {
+        color: #444;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    .product-description-section a {
+        color: #FFA600;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .product-description-section a:hover {
+        text-decoration: underline;
+    }
+
+    .price-tier-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.9em;
+    }
+    .price-tier-table th, .price-tier-table td {
+        border: 1px solid #e0e0e0;
+        padding: 8px 12px;
+        text-align: left;
+    }
+    .price-tier-table th {
+        background-color: #f8f8f8;
+        font-weight: 600;
+        color: #2B2B2B;
+    }
+    .price-tier-table td {
+        color: #444;
+    }
+</style>
+
+<section id="product-details-section" class="container-fluid">
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/Shop/Shop">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.ProductName</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4 mb-md-0"> @* Added margin for mobile spacing *@
+            <div class="main-image-container mb-3">
+                <img id="mainProductImage" src="@Model.MainImage" alt="@Model.ProductName" class="img-fluid" />
+            </div>
+            <div class="row g-2">
+                @if (Model.GalleryImages != null && Model.GalleryImages.Any())
+                {
+                    @foreach (var imageUrl in Model.GalleryImages)
+                    {
+                        <div class="col-3 col-sm-2 col-md-3 col-lg-2"> @* Adjusted column for better thumbnail layout *@
+                            <img src="@imageUrl" class="thumbnail-img @(imageUrl == Model.MainImage ? "active" : "")" alt="Thumbnail" onclick="changeMainImage(this)" />
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="product-info">
+                <div class="rating">
+                    <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i>
+                    <span class="review-count">(10 Reviews)</span>
+                </div>
+
+                <div class="product-detail-row">
+                    <strong>Availability</strong>
+                    <span class="availability @(Model.Price.Trim().ToUpper() == "N/A" ? "out-of-stock" : "in-stock")">
+                        @(Model.Price.Trim().ToUpper() == "N/A" ? "Out of Stock" : "In Stock")
+                    </span>
+                </div>
+
+                <div class="product-detail-row">
+                    <strong>Product Code</strong>
+                    <span>@(Model.ProductId > 0 ? Model.ProductId.ToString() : "N/A")</span>
+                </div>
+
+                <h1>@Model.ProductName</h1>
+
+                <div class="price-display">
+                    $<span id="currentProductPrice">
+                        @(Model.Price.Trim().ToUpper() == "N/A" ? "Price on request" : Model.Price.Replace("R", "").Trim())
+                    </span>
+                </div>
+
+                <div class="controls-section">
+                    <div class="control-row">
+                        <label class="control-label">QUANTITY</label>
+                        <div class="quantity-control">
+                            <button type="button" id="decreaseQuantity">-</button>
+                            <input type="number" id="quantityInput" value="1" min="1" step="1" />
+                            <button type="button" id="increaseQuantity">+</button>
+                        </div>
+                    </div>
+
+                    @if (availableColours.Any())
+                    {
+                        <div class="control-row">
+                            <label class="control-label">COLOUR</label>
+                            <div class="color-selector">
+                                @foreach (var colour in availableColours)
+                                {
+                                    // Dynamically add CSS classes based on color name for background-color
+                                    // Ensure you have CSS rules for these specific color classes (e.g., .color-dot.black, .color-dot.navy, etc.)
+                                    <div class="color-dot @colour.ToLower().Replace(" ", "")"
+                                         data-color="@colour"
+                                         onclick="selectColor(this, '@colour')"
+                                         title="@colour"
+                                         style="background-color: @(colour.ToLower());"> @* Added inline style for direct color application *@
+                                    </div>
+                                }
+                                <select id="colorSelect" class="form-select" style="display: none;">
+                                    @foreach (var colour in availableColours)
+                                    {
+                                        <option value="@colour">@colour</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    }
+
+                    @if (availableDimensions.Any())
+                    {
+                        <div class="control-row">
+                            <label class="control-label">DIMENSIONS</label>
+                            <select id="dimensionsSelect" class="form-select">
+                                @foreach (var dimension in availableDimensions)
+                                {
+                                    <option value="@dimension">@dimension</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                </div>
+
+                <div class="mb-4">
+                    <button id="addToCartButton" class="btn add-to-cart-btn">
+                        <i class="fa fa-shopping-cart"></i> Add to cart
+                    </button>
+                </div>
+
+                <div class="social-share">
+                    <h6>Share product</h6>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=@Context.Request.Scheme%3A%2F%2F@Context.Request.Host@Context.Request.Path" target="_blank" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/" target="_blank" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=@Context.Request.Scheme%3A%2F%2F@Context.Request.Host@Context.Request.Path&title=@Model.ProductName" target="_blank" class="social-icon linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="mailto:?subject=@Model.ProductName&body=Check out this product: @Context.Request.Scheme%3A%2F%2F@Context.Request.Host@Context.Request.Path" class="social-icon email"><i class="fa fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* NEW: Product Description Section *@
+    <div class="row mt-5 product-description-section">
+        <div class="col-12">
+            @if (!string.IsNullOrWhiteSpace(fullDescription))
+            {
+                <h5>Product Description</h5>
+                <p>@fullDescription</p>
+            }
+
+            @if (shortDescriptionList.Any())
+            {
+                <h5>Key Features</h5>
+                <ul>
+                    @foreach (var item in shortDescriptionList)
+                    {
+                        <li>@item</li>
+                    }
+                </ul>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(brandingGuideUrl))
+            {
+                <h5>Branding Guide</h5>
+                <p><a href="@brandingGuideUrl" target="_blank">Download Branding Guide (PDF)</a></p>
+            }
+
+            @if (newPricingTiers.Any())
+            {
+                <h5>Pricing Tiers</h5>
+                <table class="table price-tier-table">
+                    <thead>
+                        <tr>
+                            <th>Quantity Range</th>
+                            <th>Price per Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tier in newPricingTiers)
+                        {
+                            <tr>
+                                <td>@(tier.minQuantity) @(tier.minQuantity != tier.maxQuantity ? $" - {tier.maxQuantity}" : "")</td>
+                                <td>R @tier.price.ToString("N2", CultureInfo.InvariantCulture)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else if (oldPriceTiers.Any()) // Fallback to old price tiers if new ones are not available
+            {
+                <h5>Pricing Tiers</h5>
+                <table class="table price-tier-table">
+                    <thead>
+                        <tr>
+                            <th>Quantity</th>
+                            <th>Price per Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tier in oldPriceTiers)
+                        {
+                            <tr>
+                                <td>@tier.quantity</td>
+                                <td>R @tier.price.ToString("N2", CultureInfo.InvariantCulture)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</section>
+
+@* Global Toast Notification (from previous Shop.cshtml) *@
+<div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center w-100" style="position: fixed; top: 0; left: 0; z-index: 1050; pointer-events: none;">
+    <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; top: 1rem; width: auto; max-width: 350px;">
+        <div class="d-flex">
+            <div class="toast-body" id="cartToastBody">
+                Item added to cart!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mainProductImage = document.getElementById('mainProductImage');
+            const thumbnails = document.querySelectorAll('.thumbnail-img');
+            const quantityInput = document.getElementById('quantityInput');
+            const decreaseQuantityBtn = document.getElementById('decreaseQuantity');
+            const increaseQuantityBtn = document.getElementById('increaseQuantity');
+            const currentProductPriceSpan = document.getElementById('currentProductPrice');
+            const addToCartButton = document.getElementById('addToCartButton');
+            const colorSelect = document.getElementById('colorSelect'); // Hidden select for form submission
+            const dimensionsSelect = document.getElementById('dimensionsSelect');
+
+            // Price Tiers from Model (passed from C# to JavaScript)
+            // Prioritize newPricingTiers, then oldPriceTiers, then default to an empty array
+            const newPricingTiersJs = @Html.Raw(JsonSerializer.Serialize(newPricingTiers));
+            const oldPriceTiersJs = @Html.Raw(JsonSerializer.Serialize(oldPriceTiers));
+
+            const priceTiers = newPricingTiersJs.length > 0 ? newPricingTiersJs : oldPriceTiersJs;
+
+            // Ensure basePrice is parsed correctly, handling "R" and commas
+            const basePriceString = "@(Model.Price.Trim().ToUpper() == "N/A" ? "0" : Model.Price.Replace("R", "").Replace(",", "").Trim())";
+            const basePrice = parseFloat(basePriceString);
+
+            // Function to update main image
+            window.changeMainImage = function (thumbnail) {
+                mainProductImage.src = thumbnail.src;
+                thumbnails.forEach(img => img.classList.remove('active'));
+                thumbnail.classList.add('active');
+            };
+
+            // Function to select color (for color dots)
+            window.selectColor = function (colorDot, colorValue) {
+                document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+                colorDot.classList.add('active');
+                if (colorSelect) {
+                    colorSelect.value = colorValue;
+                }
+
+                // Optional: Update main image based on selected color variant if available
+                // This requires a 'Variants' object in your JSON and a way to map color to image URL
+                const variants = @Html.Raw(Model.AdditionalInfo.ValueKind == JsonValueKind.Object && Model.AdditionalInfo.TryGetProperty("Variants", out variantsElement) && variantsElement.ValueKind == JsonValueKind.Object ? Model.AdditionalInfo.GetProperty("Variants").GetRawText() : "{}");
+                if (variants[colorValue]) {
+                    mainProductImage.src = variants[colorValue];
+                    // Also update active thumbnail if it exists
+                    thumbnails.forEach(img => {
+                        if (img.src === variants[colorValue]) {
+                            img.classList.add('active');
+                        } else {
+                            img.classList.remove('active');
+                        }
+                    });
+                }
+            };
+
+            // Initialize first color as selected if color dots are present
+            const firstColorDot = document.querySelector('.color-dot');
+            if (firstColorDot) {
+                firstColorDot.classList.add('active');
+                // Also set the hidden select value
+                if (colorSelect) {
+                    colorSelect.value = firstColorDot.getAttribute('data-color');
+                }
+            }
+
+
+            // Function to update price based on quantity tiers
+            function updatePrice() {
+                let quantity = parseInt(quantityInput.value);
+                if (isNaN(quantity) || quantity < 1) {
+                    quantity = 1;
+                    quantityInput.value = 1;
+                }
+
+                let finalPrice = basePrice;
+
+                // Determine which price tier system to use
+                if (newPricingTiersJs.length > 0) { // Use newPricingTiers (range-based)
+                    for (let i = newPricingTiersJs.length - 1; i >= 0; i--) {
+                        // Check if quantity falls within the tier's range (minQuantity to maxQuantity)
+                        if (quantity >= newPricingTiersJs[i].Item1 && quantity <= newPricingTiersJs[i].Item2) {
+                            finalPrice = newPricingTiersJs[i].Item3; // Item3 is price
+                            break;
+                        } else if (newPricingTiersJs[i].Item1 === newPricingTiersJs[i].Item2 && quantity >= newPricingTiersJs[i].Item1) {
+                             // Handle single quantity tiers if quantity is greater than or equal to the tier's quantity
+                             finalPrice = newPricingTiersJs[i].Item3;
+                             break;
+                        }
+                    }
+                } else if (oldPriceTiersJs.length > 0) { // Fallback to oldPriceTiers (single quantity-based)
+                    for (let i = oldPriceTiersJs.length - 1; i >= 0; i--) {
+                        if (quantity >= oldPriceTiersJs[i].Item1) { // Item1 is quantity, Item2 is price
+                            finalPrice = oldPriceTiersJs[i].Item2;
+                            break;
+                        }
+                    }
+                }
+
+                // Display the calculated price
+                if (currentProductPriceSpan) {
+                    if (basePrice === 0 && "@(Model.Price.Trim().ToUpper())" === "N/A") {
+                         currentProductPriceSpan.textContent = "Price on request";
+                         addToCartButton.disabled = true; // Disable add to cart if price is on request
+                    } else {
+                         currentProductPriceSpan.textContent = finalPrice.toFixed(2);
+                         addToCartButton.disabled = false; // Enable add to cart
+                    }
+                }
+            }
+
+            // Event listeners for quantity controls
+            decreaseQuantityBtn.addEventListener('click', function () {
+                let quantity = parseInt(quantityInput.value);
+                if (quantity > 1) {
+                    quantityInput.value = quantity - 1;
+                    updatePrice();
+                }
+            });
+
+            increaseQuantityBtn.addEventListener('click', function () {
+                let quantity = parseInt(quantityInput.value);
+                quantityInput.value = quantity + 1;
+                updatePrice();
+            });
+
+            quantityInput.addEventListener('change', updatePrice);
+            quantityInput.addEventListener('keyup', updatePrice); // Update on keyup as well
+
+            // Initial price update on page load
+            updatePrice();
+
+            // Add to Cart button logic (AJAX)
+            if (addToCartButton) {
+                addToCartButton.addEventListener('click', function () {
+                    const productId = @Model.ProductId;
+                    const quantity = parseInt(quantityInput.value);
+                    const selectedColorDot = document.querySelector('.color-dot.active');
+                    const selectedColor = selectedColorDot ? selectedColorDot.getAttribute('data-color') : (colorSelect ? colorSelect.value : '');
+                    const selectedDimensions = dimensionsSelect ? dimensionsSelect.value : '';
+                    const antiforgeryToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+                    if (isNaN(quantity) || quantity < 1) {
+                        alert('Please enter a valid quantity.');
+                        return;
+                    }
+                     if (currentProductPriceSpan.textContent === "Price on request") {
+                         alert('This product is currently out of stock or requires a price quote.');
+                         return;
+                     }
+
+                    const formData = new FormData();
+                    formData.append('productId', productId);
+                    formData.append('quantity', quantity);
+                    // Append selected options if they exist
+                    if (selectedColor) {
+                        formData.append('color', selectedColor);
+                    }
+                    if (selectedDimensions) {
+                        formData.append('dimensions', selectedDimensions);
+                    }
+                    if (antiforgeryToken) {
+                        formData.append('__RequestVerificationToken', antiforgeryToken);
+                    }
+
+                    fetch('@Url.Action("AddToCart", "Cart")', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        const contentType = response.headers.get("content-type");
+                        if (contentType && contentType.indexOf("application/json") !== -1) {
+                            return response.json();
+                        } else {
+                            console.error('Expected JSON response, but received:', contentType);
+                            return { success: false, message: 'Unexpected server response. Please try again.' };
+                        }
+                    })
+                    .then(data => {
+                        const cartToast = document.getElementById('cartToast');
+                        const cartToastBody = document.getElementById('cartToastBody');
+                        let bsToast;
+
+                        if (cartToast) {
+                             bsToast = bootstrap.Toast.getInstance(cartToast) || new bootstrap.Toast(cartToast, { autohide: true, delay: 3000 });
+                        }
+
+                        if (bsToast) {
+                            cartToastBody.textContent = data.message;
+                            if (data.success) {
+                                cartToast.classList.remove('bg-danger');
+                                cartToast.classList.add('bg-success');
+                            } else {
+                                cartToast.classList.remove('bg-success');
+                                cartToast.classList.add('bg-danger');
+                            }
+                            bsToast.show();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error adding to cart:', error);
+                        const cartToast = document.getElementById('cartToast');
+                        const cartToastBody = document.getElementById('cartToastBody');
+                        let bsToast;
+                        if (cartToast) {
+                             bsToast = bootstrap.Toast.getInstance(cartToast) || new bootstrap.Toast(cartToast, { autohide: true, delay: 3000 });
+                        }
+                        if (bsToast) {
+                            cartToastBody.textContent = 'Failed to add item to cart.';
+                            cartToast.classList.remove('bg-success');
+                            cartToast.classList.add('bg-danger');
+                            bsToast.show();
+                        } else {
+                            alert('Failed to add item to cart. See console for details.');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+    }

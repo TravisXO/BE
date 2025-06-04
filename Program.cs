@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using BE.Data;
 using BE.Areas.Identity.Data;
-using BE.Services;
+using BE.Services; // Make sure this is here
 using Microsoft.AspNetCore.Identity.UI.Services;
+using BE.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("BEContextConnection") ?? throw new InvalidOperationException("Connection string 'BEContextConnection' not found.");
@@ -26,13 +27,23 @@ builder.Services.AddAuthentication()
         options.ClientSecret = googleAuthNSection["ClientSecret"];
     });
 
+// Session configuration
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// NEW: Register ProductService as a Singleton
+builder.Services.AddSingleton<ProductService>(); // This ensures one instance is shared and loaded once
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -40,6 +51,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Session middleware MUST be here, AFTER UseRouting() and BEFORE UseAuthentication()/UseAuthorization()
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

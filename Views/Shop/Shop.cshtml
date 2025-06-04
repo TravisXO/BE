@@ -1,10 +1,714 @@
-﻿
+﻿@model BE.Models.ProductListViewModel
+@using BE.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<BEUser> SignInManager
+@inject UserManager<BEUser> UserManager
+
 @{
-    ViewData["Title"] = "Shop";
+    var unifiedCategories = ViewBag.AllCategoriesUnified as List<string> ?? new List<string>();
+    var availableLiquidCapacities = ViewBag.AvailableLiquidCapacities as List<string> ?? new List<string>();
+    var currentLiquidCapacity = ViewBag.LiquidCapacity as string ?? "";
+    var availableHeadwearSizes = ViewBag.AvailableHeadwearSizes as List<string> ?? new List<string>();
+    var currentHeadwearSize = ViewBag.HeadwearSize as string ?? "";
+    var availableAgeGroups = ViewBag.AvailableAgeGroups as List<string> ?? new List<string>();
+    var currentAgeGroup = ViewBag.AgeGroup as string ?? "";
+    var availableSizes = ViewBag.AvailableSizes as List<string> ?? new List<string>();
+    var currentSize = ViewBag.Size as string ?? "";
+
+    // New: Calculate start and end for "Showing X to Y"
+    int pageSize = 20; // Assuming 20, make sure this matches your controller's pageSize
+    int totalProducts = ViewBag.TotalProducts ?? 0; // Ensure TotalProducts is not null
+    int startResult = totalProducts == 0 ? 0 : (Model.CurrentPage - 1) * pageSize + 1;
+    int endResult = totalProducts == 0 ? 0 : Math.Min(Model.CurrentPage * pageSize, totalProducts);
+
+    // Helper to generate URL with all current filters preserved
+    Func<int, string, string> GetPageUrl = (pageNumber, sortByValue) =>
+    {
+        var routeValues = new Dictionary<string, string?>
+                {
+            { "page", pageNumber.ToString() },
+            { "search", ViewBag.Search },
+            { "category", ViewBag.Category },
+            { "color", ViewBag.Color },
+            { "gender", ViewBag.Gender },
+            { "liquidCapacity", currentLiquidCapacity },
+            { "headwearSize", currentHeadwearSize },
+            { "ageGroup", currentAgeGroup },
+            { "sizeFilter", currentSize },
+            { "minPrice", ViewBag.MinPrice?.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+            { "maxPrice", ViewBag.MaxPrice?.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+            { "sortBy", sortByValue }
+                };
+
+        // Filter out null or empty values for cleaner URLs
+        routeValues = routeValues.Where(kv => !string.IsNullOrEmpty(kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value);
+
+        return Url.Action("Shop", routeValues);
+    };
+
+    // Current sortBy value from ViewBag
+    string currentSortBy = ViewBag.SortBy as string ?? "";
+
+    // --- Smart Pagination Logic ---
+    int numFixedStartPages = 7; // Number of pages to always show at the beginning (e.g., 1, 2, 3, 4, 5, 6, 7)
+    int numFixedEndPages = 7;   // Number of pages to always show at the end (e.g., ..., TotalPages-6, ..., TotalPages)
+    int numPagesAroundCurrent = 5; // Total number of pages to show around the current page (e.g., 2 before, current, 2 after)
+
+    HashSet<int> pagesToDisplay = new HashSet<int>();
+
+    // Add fixed start pages
+    for (int i = 1; i <= Math.Min(numFixedStartPages, Model.TotalPages); i++)
+    {
+        pagesToDisplay.Add(i);
+    }
+
+    // Add pages around the current page
+    int halfPagesAround = (numPagesAroundCurrent - 1) / 2;
+    for (int i = Model.CurrentPage - halfPagesAround; i <= Model.CurrentPage + halfPagesAround; i++)
+    {
+        if (i >= 1 && i <= Model.TotalPages)
+        {
+            pagesToDisplay.Add(i);
+        }
+    }
+
+    // Add fixed end pages
+    for (int i = Math.Max(1, Model.TotalPages - numFixedEndPages + 1); i <= Model.TotalPages; i++)
+    {
+        pagesToDisplay.Add(i);
+    }
+
+    // Sort the unique page numbers for rendering
+    List<int> sortedPages = pagesToDisplay.OrderBy(p => p).ToList();
 }
 
 <section id="Shop-section" style="padding: 4rem 2rem;">
-    <!--Breadcrumbs Row-->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/Shop/Shop">Shop</a></li>
 
+                @{
+                    string matched = ViewBag.MatchedCategory as string ?? "";
+                    string level = ViewBag.MatchedCategoryLevel;
+
+                    var matchedProduct = Model.Products.FirstOrDefault(p =>
+                    (p.Category != null && p.Category.Equals(matched, StringComparison.OrdinalIgnoreCase)) ||
+                    (p.SubCategory != null && p.SubCategory.Equals(matched, StringComparison.OrdinalIgnoreCase)) ||
+                    (p.SubSubCategory != null && p.SubSubCategory.Equals(matched, StringComparison.OrdinalIgnoreCase)));
+
+                    string cat = matchedProduct?.Category;
+                    string sub = matchedProduct?.SubCategory;
+                    string subsub = matchedProduct?.SubSubCategory;
+
+                    string encode(string value) => System.Net.WebUtility.UrlEncode(value);
+
+                    if (level == "Category" && !string.IsNullOrWhiteSpace(cat))
+                    {
+                        <li class="breadcrumb-item"><a href="/Shop/Shop?category=@encode(cat)">@cat</a></li>
+                    }
+                    else if (level == "SubCategory" && !string.IsNullOrWhiteSpace(cat) && !string.IsNullOrWhiteSpace(sub))
+                    {
+                        <li class="breadcrumb-item"><a href="/Shop/Shop?category=@encode(cat)">@cat</a></li>
+                        <li class="breadcrumb-item"><a href="/Shop/Shop?category=@encode(sub)">@sub</a></li>
+                    }
+                    else if (level == "SubSubCategory" && !string.IsNullOrWhiteSpace(cat) && !string.IsNullOrWhiteSpace(sub) && !string.IsNullOrWhiteSpace(subsub))
+                    {
+                        <li class="breadcrumb-item"><a href="/Shop/Shop?category=@encode(cat)">@cat</a></li>
+                        <li class="breadcrumb-item"><a href="/Shop/Shop?category=@encode(sub)">@sub</a></li>
+                        <li class="breadcrumb-item"><a href="/Shop/Shop?category=@encode(subsub)">@subsub</a></li>
+                    }
+                    else
+                    {
+                        <li class="breadcrumb-item">All Products</li>
+                    }
+                }
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="border p-3" style="background-color: #f9f9f9;">
+                <h6 style="font-weight: 600;">Filters</h6>
+                <div class="accordion" id="searchAccordion">
+                    <div class="accordion-item" style="border: none;">
+                        <h2 class="accordion-header" id="headingSearch">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSearch" aria-expanded="false" aria-controls="collapseSearch"
+                                    style="background-color: #fff; font-size: 14px; font-weight: 600;">
+                                Search Products
+                            </button>
+                        </h2>
+                        <div id="collapseSearch" class="accordion-collapse collapse" aria-labelledby="headingSearch" data-bs-parent="#searchAccordion">
+                            <div class="accordion-body">
+                                <form method="get" asp-controller="Shop" asp-action="Shop">
+                                    <div class="input-group">
+                                        <input type="text" name="search" class="form-control form-control-sm" placeholder="Enter product name..." value="@ViewBag.Search" />
+                                        <button class="btn btn-sm" type="submit" style="background-color: #eeebe3; color: #FFA600;">Search</button>
+                                    </div>
+                                    <input type="hidden" name="category" value="@ViewBag.Category" />
+                                    <input type="hidden" name="color" value="@ViewBag.Color" />
+                                    <input type="hidden" name="gender" value="@ViewBag.Gender" />
+                                    <input type="hidden" name="liquidCapacity" value="@currentLiquidCapacity" />
+                                    <input type="hidden" name="headwearSize" value="@currentHeadwearSize" />
+                                    <input type="hidden" name="ageGroup" value="@currentAgeGroup" />
+                                    <input type="hidden" name="sizeFilter" value="@currentSize" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion mt-3" id="categoryAccordion">
+                    <div class="accordion-item" style="border: none;">
+                        <h2 class="accordion-header" id="headingCategory">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategory" aria-expanded="false" aria-controls="collapseCategory"
+                                    style="background-color: #fff; font-size: 14px; font-weight: 600;">
+                                Filter by Category
+                            </button>
+                        </h2>
+                        <div id="collapseCategory" class="accordion-collapse collapse" aria-labelledby="headingCategory" data-bs-parent="#categoryAccordion">
+                            <div class="accordion-body">
+                                <form method="get" asp-controller="Shop" asp-action="Shop">
+                                    <div class="mb-2">
+                                        <label style="font-weight: 600; font-size: 13px;">Category</label>
+                                        <select name="category" class="form-select">
+                                            <option value="">All Categories</option>
+                                            @foreach (var cat in unifiedCategories)
+                                            {
+                                                <option value="@cat" selected="@(cat == ViewBag.Category ? "selected" : null)">
+                                                    @cat
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="search" value="@ViewBag.Search" />
+                                    <input type="hidden" name="color" value="@ViewBag.Color" />
+                                    <input type="hidden" name="gender" value="@ViewBag.Gender" />
+                                    <input type="hidden" name="liquidCapacity" value="@currentLiquidCapacity" />
+                                    <input type="hidden" name="headwearSize" value="@currentHeadwearSize" />
+                                    <input type="hidden" name="ageGroup" value="@currentAgeGroup" />
+                                    <input type="hidden" name="sizeFilter" value="@currentSize" />
+                                    <button type="submit" class="btn btn-sm w-100 mt-2" style="background-color: #eeebe3; color: #FFA600;">Apply Filters</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion mt-3" id="priceAccordion">
+                    <div class="accordion-item" style="border: none;">
+                        <h2 class="accordion-header" id="headingPrice">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapsePrice" aria-expanded="false" aria-controls="collapsePrice"
+                                    style="background-color: #fff; font-size: 14px; font-weight: 600;">
+                                Filter by Price
+                            </button>
+                        </h2>
+                        <div id="collapsePrice" class="accordion-collapse collapse" aria-labelledby="headingPrice" data-bs-parent="#priceAccordion">
+                            <div class="accordion-body">
+                                <form id="priceFilterForm" method="get" asp-controller="Shop" asp-action="Shop">
+                                    <input type="hidden" name="search" value="@ViewBag.Search" />
+                                    <input type="hidden" name="category" value="@ViewBag.Category" />
+                                    <input type="hidden" name="color" value="@ViewBag.Color" />
+                                    <input type="hidden" name="gender" value="@ViewBag.Gender" />
+                                    <input type="hidden" name="liquidCapacity" value="@currentLiquidCapacity" />
+                                    <input type="hidden" name="headwearSize" value="@currentHeadwearSize" />
+                                    <input type="hidden" name="ageGroup" value="@currentAgeGroup" />
+                                    <input type="hidden" name="sizeFilter" value="@currentSize" />
+
+                                    <div class="mb-3">
+                                        <label for="price-range-slider" style="font-weight: 600; font-size: 13px;">Price Range</label>
+                                        <div class="price-slider-wrapper">
+                                            <input type="range" class="form-range price-slider" id="minPriceSlider"
+                                                   min="@ViewBag.InitialMinPrice" max="@ViewBag.InitialMaxPrice" step="0.01"
+                                                   value="@ViewBag.MinPrice">
+                                            <input type="range" class="form-range price-slider" id="maxPriceSlider"
+                                                   min="@ViewBag.InitialMinPrice" max="@ViewBag.InitialMaxPrice" step="0.01"
+                                                   value="@ViewBag.MaxPrice">
+                                            <div class="slider-track"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <div class="input-group input-group-sm w-48">
+                                            <span class="input-group-text price-input-label" style="background-color: #EEEBE3; color: #2B2B2B; border-color: #ddd;">R</span>
+                                            <input type="number" class="form-control price-input" id="minPriceInput" name="minPrice"
+                                                   value="@ViewBag.MinPrice" step="0.01"
+                                                   style="border-color: #ddd; color: #2B2B2B;">
+                                        </div>
+                                        <div class="input-group input-group-sm w-48">
+                                            <span class="input-group-text price-input-label" style="background-color: #EEEBE3; color: #2B2B2B; border-color: #ddd;">R</span>
+                                            <input type="number" class="form-control price-input" id="maxPriceInput" name="maxPrice"
+                                                   value="@ViewBag.MaxPrice" step="0.01"
+                                                   style="border-color: #ddd; color: #2B2B2B;">
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-sm w-100 mt-2" style="background-color: #eeebe3; color: #FFA600;">Apply Filters</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion mt-3" id="colorAccordion">
+                    <div class="accordion-item" style="border: none;">
+                        <h2 class="accordion-header" id="headingColor">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseColor" aria-expanded="false" aria-controls="collapseColor"
+                                    style="background-color: #fff; font-size: 14px; font-weight: 600;">
+                                Filter by Colour
+                            </button>
+                        </h2>
+                        <div id="collapseColor" class="accordion-collapse collapse" aria-labelledby="headingColor" data-bs-parent="#colorAccordion">
+                            <div class="accordion-body">
+                                <form method="get" asp-controller="Shop" asp-action="Shop">
+                                    <input type="hidden" name="search" value="@ViewBag.Search" />
+                                    <input type="hidden" name="category" value="@ViewBag.Category" />
+                                    <input type="hidden" name="subCategory" value="@Context.Request.Query["subCategory"]" />
+                                    <input type="hidden" name="subSubCategory" value="@Context.Request.Query["subSubCategory"]" />
+                                    <input type="hidden" name="gender" value="@ViewBag.Gender" />
+                                    <input type="hidden" name="liquidCapacity" value="@currentLiquidCapacity" />
+                                    <input type="hidden" name="headwearSize" value="@currentHeadwearSize" />
+                                    <input type="hidden" name="ageGroup" value="@currentAgeGroup" />
+                                    <input type="hidden" name="sizeFilter" value="@currentSize" />
+
+                                    <div class="mb-2">
+                                        <label style="font-weight: 600; font-size: 13px;">Colour</label>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            @foreach (var colour in ViewBag.AvailableColors as List<string>)
+                                            {
+                                                var selectedColour = ViewBag.Color;
+                                                var isSelected = colour.Equals(selectedColour, StringComparison.OrdinalIgnoreCase);
+
+                                                <button type="submit" name="color" value="@colour"
+                                                        class="rounded-circle border"
+                                                        style="
+                                                        width: 28px;
+                                                        height: 28px;
+                                                        background-color: @colour.ToLower();
+                                                        border: 2px solid @(isSelected ? "#FFA600" : "#ddd");
+                                                        cursor: pointer;">
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-sm w-100 mt-2" style="background-color: #eeebe3; color: #FFA600;">
+                                        Apply Filters
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion mt-3" id="genderAccordion">
+                    <div class="accordion-item" style="border: none;">
+                        <h2 class="accordion-header" id="headingGender">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseGender" aria-expanded="false" aria-controls="collapseGender"
+                                    style="background-color: #fff; font-size: 14px; font-weight: 600;">
+                                Filter by Gender
+                            </button>
+                        </h2>
+                        <div id="collapseGender" class="accordion-collapse collapse" aria-labelledby="headingGender" data-bs-parent="#genderAccordion">
+                            <div class="accordion-body">
+                                <form method="get" asp-controller="Shop" asp-action="Shop">
+                                    <input type="hidden" name="search" value="@ViewBag.Search" />
+                                    <input type="hidden" name="category" value="@ViewBag.Category" />
+                                    <input type="hidden" name="color" value="@ViewBag.Color" />
+                                    <input type="hidden" name="liquidCapacity" value="@currentLiquidCapacity" />
+                                    <input type="hidden" name="headwearSize" value="@currentHeadwearSize" />
+                                    <input type="hidden" name="ageGroup" value="@currentAgeGroup" />
+                                    <input type="hidden" name="sizeFilter" value="@currentSize" />
+
+                                    <div class="mb-2">
+                                        <label style="font-weight: 600; font-size: 13px;">Gender</label>
+                                        <select name="gender" class="form-select form-select-sm">
+                                            <option value="">All Genders</option>
+                                            @foreach (var gender in ViewBag.AvailableGenders as List<string>)
+                                            {
+                                                var selectedGender = ViewBag.Gender;
+                                                <option value="@gender" selected="@(gender.Equals(selectedGender, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">
+                                                    @gender
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm w-100 mt-2" style="background-color: #eeebe3; color: #FFA600;">Apply Filters</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion mt-3" id="liquidCapacityAccordion">
+                    <div class="accordion-item" style="border: none;">
+                        <h2 class="accordion-header" id="headingLiquidCapacity">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseLiquidCapacity" aria-expanded="false" aria-controls="collapseLiquidCapacity"
+                                    style="background-color: #fff; font-size: 14px; font-weight: 600;">
+                                Filter by Liquid Capacity
+                            </button>
+                        </h2>
+                        <div id="collapseLiquidCapacity" class="accordion-collapse collapse" aria-labelledby="headingLiquidCapacity" data-bs-parent="#liquidCapacityAccordion">
+                            <div class="accordion-body">
+                                <form method="get" asp-controller="Shop" asp-action="Shop">
+                                    <input type="hidden" name="search" value="@ViewBag.Search" />
+                                    <input type="hidden" name="category" value="@ViewBag.Category" />
+                                    <input type="hidden" name="color" value="@ViewBag.Color" />
+                                    <input type="hidden" name="gender" value="@ViewBag.Gender" />
+                                    <input type="hidden" name="headwearSize" value="@currentHeadwearSize" />
+                                    <input type="hidden" name="ageGroup" value="@currentAgeGroup" />
+                                    <input type="hidden" name="sizeFilter" value="@currentSize" />
+
+                                    <div class="mb-2">
+                                        <label style="font-weight: 600; font-size: 13px;">Capacity</label>
+                                        <select name="liquidCapacity" class="form-select form-select-sm">
+                                            <option value="">All Capacities</option>
+                                            @foreach (var capacity in availableLiquidCapacities)
+                                            {
+                                                <option value="@capacity" selected="@(capacity.Equals(currentLiquidCapacity, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">
+                                                    @capacity
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm w-100 mt-2" style="background-color: #eeebe3; color: #FFA600;">Apply Filters</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion mt-3" id="headwearSizeAccordion">
+                    <div class="accordion-item" style="border: none;">
+                        <h2 class="accordion-header" id="headingHeadwearSize">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseHeadwearSize" aria-expanded="false" aria-controls="collapseHeadwearSize"
+                                    style="background-color: #fff; font-size: 14px; font-weight: 600;">
+                                Filter by Headwear Size
+                            </button>
+                        </h2>
+                        <div id="collapseHeadwearSize" class="accordion-collapse collapse" aria-labelledby="headingHeadwearSize" data-bs-parent="#headwearSizeAccordion">
+                            <div class="accordion-body">
+                                <form method="get" asp-controller="Shop" asp-action="Shop">
+                                    <input type="hidden" name="search" value="@ViewBag.Search" />
+                                    <input type="hidden" name="category" value="@ViewBag.Category" />
+                                    <input type="hidden" name="color" value="@ViewBag.Color" />
+                                    <input type="hidden" name="gender" value="@ViewBag.Gender" />
+                                    <input type="hidden" name="liquidCapacity" value="@currentLiquidCapacity" />
+                                    <input type="hidden" name="ageGroup" value="@currentAgeGroup" />
+                                    <input type="hidden" name="sizeFilter" value="@currentSize" />
+
+                                    <div class="mb-2">
+                                        <label style="font-weight: 600; font-size: 13px;">Size</label>
+                                        <select name="headwearSize" class="form-select form-select-sm">
+                                            <option value="">All Sizes</option>
+                                            @foreach (var size in availableHeadwearSizes)
+                                            {
+                                                <option value="@size" selected="@(size.Equals(currentHeadwearSize, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">
+                                                    @size
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm w-100 mt-2" style="background-color: #eeebe3; color: #FFA600;">Apply Filters</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion mt-3" id="ageGroupAccordion">
+                    <div class="accordion-item" style="border: none;">
+                        <h2 class="accordion-header" id="headingAgeGroup">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseAgeGroup" aria-expanded="false" aria-controls="collapseAgeGroup"
+                                    style="background-color: #fff; font-size: 14px; font-weight: 600;">
+                                Filter by Age Group
+                            </button>
+                        </h2>
+                        <div id="collapseAgeGroup" class="accordion-collapse collapse" aria-labelledby="headingAgeGroup" data-bs-parent="#ageGroupAccordion">
+                            <div class="accordion-body">
+                                <form method="get" asp-controller="Shop" asp-action="Shop">
+                                    <input type="hidden" name="search" value="@ViewBag.Search" />
+                                    <input type="hidden" name="category" value="@ViewBag.Category" />
+                                    <input type="hidden" name="color" value="@ViewBag.Color" />
+                                    <input type="hidden" name="gender" value="@ViewBag.Gender" />
+                                    <input type="hidden" name="liquidCapacity" value="@currentLiquidCapacity" />
+                                    <input type="hidden" name="headwearSize" value="@currentHeadwearSize" />
+                                    <input type="hidden" name="sizeFilter" value="@currentSize" />
+
+                                    <div class="mb-2">
+                                        <label style="font-weight: 600; font-size: 13px;">Age Group</label>
+                                        <select name="ageGroup" class="form-select form-select-sm">
+                                            <option value="">All Age Groups</option>
+                                            @foreach (var group in availableAgeGroups)
+                                            {
+                                                <option value="@group" selected="@(group.Equals(currentAgeGroup, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">
+                                                    @group
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm w-100 mt-2" style="background-color: #eeebe3; color: #FFA600;">Apply Filters</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion mt-3" id="sizeAccordion">
+                    <div class="accordion-item" style="border: none;">
+                        <h2 class="accordion-header" id="headingSize">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseSize" aria-expanded="false" aria-controls="collapseSize"
+                                    style="background-color: #fff; font-size: 14px; font-weight: 600;">
+                                Filter by Size
+                            </button>
+                        </h2>
+                        <div id="collapseSize" class="accordion-collapse collapse" aria-labelledby="headingSize" data-bs-parent="#sizeAccordion">
+                            <div class="accordion-body">
+                                <form method="get" asp-controller="Shop" asp-action="Shop">
+                                    <input type="hidden" name="search" value="@ViewBag.Search" />
+                                    <input type="hidden" name="category" value="@ViewBag.Category" />
+                                    <input type="hidden" name="color" value="@ViewBag.Color" />
+                                    <input type="hidden" name="gender" value="@ViewBag.Gender" />
+                                    <input type="hidden" name="liquidCapacity" value="@currentLiquidCapacity" />
+                                    <input type="hidden" name="headwearSize" value="@currentHeadwearSize" />
+                                    <input type="hidden" name="ageGroup" value="@currentAgeGroup" />
+
+                                    <div class="mb-2">
+                                        <label style="font-weight: 600; font-size: 13px;">Size</label>
+                                        <select name="sizeFilter" class="form-select form-select-sm">
+                                            <option value="">All Sizes</option>
+                                            @foreach (var size in availableSizes)
+                                            {
+                                                <option value="@size" selected="@(size.Equals(currentSize, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">
+                                                    @size
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm w-100 mt-2" style="background-color: #eeebe3; color: #FFA600;">Apply Filters</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            @if (TempData["CartMessage"] != null)
+            {
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    @TempData["CartMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="results-info">
+                    Showing @startResult to @endResult of @ViewBag.TotalProducts results
+                    <br />
+                    Page: @Model.CurrentPage
+                </div>
+                <div class="sort-by">
+                    <label for="sortBySelect" class="form-label mb-0 me-2" style="font-weight: 600;">Sort By:</label>
+                    <select class="form-select form-select-sm d-inline-block w-auto" id="sortBySelect"
+                            onchange="location.href = this.value;"
+                            style="border-color: #ddd; color: #2B2B2B;">
+                        <option value="@GetPageUrl(1, "")"
+                                selected="@(string.IsNullOrEmpty(ViewBag.SortBy) ? "selected" : null)">
+                            Best Match
+                        </option>
+                        <option value="@GetPageUrl(1, "priceAsc")"
+                                selected="@(ViewBag.SortBy == "priceAsc" ? "selected" : null)">
+                            Price: Low to High
+                        </option>
+                        <option value="@GetPageUrl(1, "priceDesc")"
+                                selected="@(ViewBag.SortBy == "priceDesc" ? "selected" : null)">
+                            Price: High to Low
+                        </option>
+                        <option value="@GetPageUrl(1, "nameAsc")"
+                                selected="@(ViewBag.SortBy == "nameAsc" ? "selected" : null)">
+                            Name: A-Z
+                        </option>
+                        <option value="@GetPageUrl(1, "nameDesc")"
+                                selected="@(ViewBag.SortBy == "nameDesc" ? "selected" : null)">
+                            Name: Z-A
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                @foreach (var product in Model.Products)
+                {
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card h-100" style="background-color: #2B2B2B; border: none; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                            <a href="@Url.Action("ProductDetails", "Shop", new { id = product.ProductId })" style="text-decoration: none; color: inherit;">
+                                <img src="@product.MainImage" alt="@product.ProductName" style="width: 100%; height: 300px; object-fit: cover; display: block; padding: 1rem; border-radius: 1.5rem;" />
+                                <div class="p-3">
+                                    <h6 style="color: #FFFFFF; font-weight: 600; font-size: 14px; margin-bottom: 0.5rem;">@product.ProductName</h6>
+                                    @if (string.IsNullOrWhiteSpace(product.Price) || product.Price.Trim().ToUpper() == "N/A")
+                                    {
+                                        <p style="color: #FFFFFF; font-size: 14px; margin: 0;">Price on request</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="color: #FFFFFF; font-size: 14px; margin: 0;">@product.Price</p>
+                                    }
+                                </div>
+                            </a>
+                            <div class="d-flex justify-content-end align-items-center mt-3 p-3 pt-0">
+                                @* Added p-3 pt-0 for spacing consistency *@
+                                <form class="add-to-cart-form" data-product-id="@product.ProductId" method="post">
+                                    <input type="hidden" name="productId" value="@product.ProductId" />
+                                    <button type="submit" class="btn btn-sm" style="background-color: #eeebe3; color: #FFA600; font-size: 13px; display: flex; align-items: center; padding: 6px 12px; border-radius: 6px;">
+                                        <i class="fa fa-shopping-cart me-2"></i> Add to cart
+                                    </button>
+                                    @Html.AntiForgeryToken()
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="d-flex justify-content-center mt-4">
+                    <nav>
+                        <ul class="pagination" style="--bs-pagination-bg: transparent;">
+                            @* Previous Page Link *@
+                            <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                                <a class="page-link"
+                                   style="background-color: #eeebe3; color: #2B2B2B; border: none; margin: 0 4px; border-radius: 6px;"
+                                   href="@GetPageUrl(Model.CurrentPage - 1, currentSortBy)"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+
+                            @{
+                                int lastDisplayedPage = 0;
+                                foreach (var pageNum in sortedPages)
+                                {
+                                    if (pageNum > lastDisplayedPage + 1)
+                                    {
+                                        // Add ellipsis if there's a gap
+                                        <li class="page-item disabled"><span class="page-link" style="background-color: #eeebe3; color: #2B2B2B; border: none; margin: 0 4px; border-radius: 6px;">...</span></li>
+                                    }
+
+                                    <li class="page-item @(Model.CurrentPage == pageNum ? "active" : "")">
+                                        <a class="page-link"
+                                           style="background-color: @(Model.CurrentPage == pageNum ? "#FF6A00" : "#eeebe3"); color: @(Model.CurrentPage == pageNum ? "white" : "#2B2B2B"); border: none; margin: 0 4px; border-radius: 6px;"
+                                           href="@GetPageUrl(pageNum, currentSortBy)">@pageNum</a>
+                                    </li>
+                                    lastDisplayedPage = pageNum;
+                                }
+                            }
+
+                            @* Next Page Link *@
+                            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link"
+                                   style="background-color: #eeebe3; color: #2B2B2B; border: none; margin: 0 4px; border-radius: 6px;"
+                                   href="@GetPageUrl(Model.CurrentPage + 1, currentSortBy)"
+                                   aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
+<div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center w-100" style="position: fixed; top: 0; left: 0; z-index: 1050; pointer-events: none;">
+    <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; top: 1rem; width: auto; max-width: 350px;">
+        <div class="d-flex">
+            <div class="toast-body" id="cartToastBody">
+                Item added to cart!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+            const cartToast = document.getElementById('cartToast');
+            const cartToastBody = document.getElementById('cartToastBody');
+            let bsToast;
+
+            if (cartToast) {
+                // Initialize Bootstrap Toast
+                bsToast = new bootstrap.Toast(cartToast, {
+                    autohide: true,
+                    delay: 3000
+                });
+            }
+
+            addToCartForms.forEach(form => {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault(); // Prevent default form submission (page reload)
+
+                    const productId = this.querySelector('input[name="productId"]').value;
+                    const antiforgeryToken = this.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                    // Construct FormData object to send to the server
+                    const formData = new FormData();
+                    formData.append('productId', productId);
+                    formData.append('__RequestVerificationToken', antiforgeryToken);
+
+                    fetch('@Url.Action("AddToCart", "Cart")', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        // Check if the response is JSON before parsing
+                        const contentType = response.headers.get("content-type");
+                        if (contentType && contentType.indexOf("application/json") !== -1) {
+                            return response.json();
+                        } else {
+                            // If not JSON, it might be a redirect or error page content
+                            // Handle as non-success, or log response.text() for debugging
+                            console.error('Expected JSON response, but received:', contentType);
+                            return { success: false, message: 'Unexpected server response. Please try again.' };
+                        }
+                    })
+                    .then(data => {
+                        if (bsToast) {
+                            cartToastBody.textContent = data.message;
+                            if (data.success) {
+                                cartToast.classList.remove('bg-danger');
+                                cartToast.classList.add('bg-success');
+                            } else {
+                                cartToast.classList.remove('bg-success');
+                                cartToast.classList.add('bg-danger');
+                            }
+                            bsToast.show(); // Show the toast
+                        } else {
+                            // Fallback for no toast (e.g., if Bootstrap JS isn't loaded)
+                            alert(data.message);
+                        }
+
+                        // Optional: Update a small cart count icon in the header if you have one
+                        // This would require another AJAX call or a global event.
+                    })
+                    .catch(error => {
+                        console.error('Error adding to cart:', error);
+                        if (bsToast) {
+                            cartToastBody.textContent = 'Failed to add item to cart.';
+                            cartToast.classList.remove('bg-success');
+                            cartToast.classList.add('bg-danger');
+                            bsToast.show();
+                        } else {
+                            alert('Failed to add item to cart. See console for details.');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

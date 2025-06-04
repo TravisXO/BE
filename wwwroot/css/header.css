@@ -1,5 +1,4 @@
 ﻿.header {
-    margin-left: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -13,6 +12,7 @@
         font-size: 2rem;
         font-weight: bold;
         color: var(--color-primary);
+        padding: 0;
     }
 
 .nav-links {
@@ -36,17 +36,19 @@
             border: 1px solid var(--color-primary);
         }
 
+/* Ensure icons have a consistent size and alignment in nav-icons */
 .nav-icons {
     display: flex;
     gap: 1.5rem;
-    font-size: 1.2rem;
+    font-size: 1.2rem; /* Applies to icons */
     color: var(--color-primary);
     cursor: pointer;
+    align-items: center; /* Ensures all direct children are vertically centered */
 }
 
 .user-dropdown {
     display: flex;
-    align-items: center;
+    align-items: center; /* This is already present, which is good */
     gap: 6px;
     color: var(--color-primary);
     cursor: pointer;
@@ -95,17 +97,21 @@
     display: none;
 }
 
+/* Ensure the user-toggle-row itself is a flex container that centers its items */
 .user-toggle-row {
     display: flex;
-    align-items: center;
+    align-items: center; /* This is key to vertically centering the welcome-msg and user-dropdown */
     gap: 0.5rem;
 }
 
+/* Ensure the welcome-msg behaves well within its flex parent */
 .welcome-msg {
     font-family: var(--font-primary);
     color: var(--color-primary);
     font-size: 0.9rem;
     font-weight: 600;
+    line-height: 1; /* Keep this for consistent text height */
+    /* vertical-align: middle; */ /* Can be added if line-height: 1 and align-items: center don't fully fix it, though often not needed with flexbox */
 }
 
 .user-menu a,
@@ -130,3 +136,6 @@
     outline: none;
 }
 
+.nav-icons .fa {
+    vertical-align: middle; /* Ensures Font Awesome icons align to the middle */
+}

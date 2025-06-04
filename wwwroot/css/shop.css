@@ -1,0 +1,328 @@
+﻿/* Custom Price Slider Styles */
+.price-slider-wrapper {
+    position: relative;
+    width: 100%;
+    height: 4px; /* Height of the track */
+    background-color: #ddd; /* Light grey track background */
+    border-radius: 2px;
+    margin-top: 1.5rem; /* Space above the slider */
+    margin-bottom: 0.5rem; /* Space below the slider */
+}
+
+.price-slider {
+    position: absolute;
+    width: 100%; /* Important for range input positioning */
+    -webkit-appearance: none; /* Hide default slider */
+    appearance: none;
+    background: transparent; /* Make track transparent */
+    pointer-events: none; /* Allows clicks to pass through to the lower slider */
+    z-index: 2; /* Ensures thumbs are above the track */
+    padding: 0;
+    margin: 0;
+}
+
+    /* Specific styling for the range input thumb (the draggable circle) */
+    .price-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background-color: #FF6A00;
+        border-radius: 50%;
+        cursor: grab;
+        pointer-events: all;
+        margin-top: -9px; /* Adjusted to center the thumb on the track */
+        box-shadow: 0 0 0 4px #EEEBE3;
+    }
+
+    .price-slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background-color: #FF6A00;
+        border-radius: 50%;
+        cursor: grab;
+        pointer-events: all;
+        margin-top: -9px; /* Adjusted to center the thumb on the track */
+        box-shadow: 0 0 0 4px #EEEBE3;
+    }
+
+    /* Specific styling for the range input track (the line itself) */
+    .price-slider::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        background: transparent; /* Keep this transparent, actual track is .slider-track */
+        border-radius: 2px;
+    }
+
+    .price-slider::-moz-range-track {
+        width: 100%;
+        height: 4px;
+        background: transparent; /* Keep this transparent */
+        border-radius: 2px;
+    }
+
+/* Custom filled track between thumbs */
+.slider-track {
+    position: absolute;
+    height: 4px;
+    background-color: #2B2B2B; /* Charcoal filled track color */
+    border-radius: 2px;
+    z-index: 1; /* Below the thumbs */
+    left: 0%; /* Will be updated by JS */
+    width: 100%; /* Will be updated by JS */
+}
+
+/* Input boxes for price */
+.price-input-label {
+    background-color: #EEEBE3; /* Beige */
+    color: #2B2B2B; /* Charcoal */
+    border-color: #ddd; /* Light border */
+}
+
+.price-input {
+    border-color: #ddd; /* Light border */
+    color: #2B2B2B; /* Charcoal text */
+}
+
+    .price-input:focus {
+        border-color: #FF6A00; /* Orange on focus */
+        box-shadow: 0 0 0 0.25rem rgba(255, 106, 0, 0.25); /* Orange shadow on focus */
+    }
+
+/* Adjust Bootstrap input-group width for two inputs side-by-side */
+.w-48 {
+    width: 48%; /* A bit less than 50% to allow for gap or flexible spacing */
+}
+
+/* Sliding Cart Menu Styles */
+.sliding-cart {
+    position: fixed;
+    top: 0;
+    right: -400px; /* Initially hidden off-screen to the right */
+    width: 380px; /* Adjust width as needed */
+    height: 100%;
+    background-color: white; /* Or your beige/light color */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensure it's above most content */
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease-out; /* Smooth sliding animation */
+    overflow-y: auto; /* Enable scrolling for cart items */
+}
+
+    .sliding-cart.open {
+        right: 0; /* Slide in */
+    }
+
+    .sliding-cart .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #eeebe3;
+        background-color: #f9f9f9; /* Slightly different background for header */
+    }
+
+        .sliding-cart .cart-header h3 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #2B2B2B; /* Charcoal */
+            font-family: 'Playfair Display', serif;
+        }
+
+    .sliding-cart .close-btn {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        cursor: pointer;
+        color: #666;
+        line-height: 1;
+    }
+
+        .sliding-cart .close-btn:hover {
+            color: #FF6A00; /* Orange on hover */
+        }
+
+    .sliding-cart .cart-items-list {
+        flex-grow: 1; /* Allows this section to take available height */
+        padding: 1rem;
+        overflow-y: auto; /* Enable scrolling if many items */
+    }
+
+    .sliding-cart .empty-cart-message {
+        text-align: center;
+        color: #666;
+        margin-top: 2rem;
+    }
+
+    /* Style for individual items in the sliding cart */
+    .sliding-cart .cart-item-small {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        border-bottom: 1px dashed #ddd; /* Subtle separator */
+        padding-bottom: 1rem;
+    }
+
+        .sliding-cart .cart-item-small:last-child {
+            border-bottom: none; /* No border for the last item */
+        }
+
+    .sliding-cart .item-img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 0.8rem;
+    }
+
+    .sliding-cart .item-details-small {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .sliding-cart .item-details-small h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 0.2rem 0;
+            color: #2B2B2B; /* Charcoal */
+        }
+
+        .sliding-cart .item-details-small .price-qty {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+            .sliding-cart .item-details-small .price-qty .item-total-price {
+                font-weight: 700;
+                color: #FF6A00; /* Orange */
+            }
+
+    .sliding-cart .item-remove-small {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #ccc; /* Light grey 'x' */
+        margin-left: 0.5rem;
+    }
+
+        .sliding-cart .item-remove-small:hover {
+            color: #FF6A00; /* Orange on hover */
+        }
+
+    /* Styles for Quantity Controls in Sliding Cart */
+    .sliding-cart .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.2rem; /* Small margin above controls */
+    }
+
+    .sliding-cart .quantity-btn {
+        width: 24px; /* Smaller buttons */
+        height: 24px;
+        background-color: #eeebe3; /* Beige button background */
+        color: #2B2B2B; /* Charcoal text */
+        border: 1px solid #ddd;
+        border-radius: 4px; /* Slightly rounded corners */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1rem;
+        line-height: 1; /* Center the +/- text */
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+        .sliding-cart .quantity-btn:hover {
+            background-color: #FF6A00; /* Orange on hover */
+            color: white; /* White text on hover */
+        }
+
+    .sliding-cart .qty-display {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #2B2B2B; /* Charcoal */
+        min-width: 20px; /* Ensure some space for quantity text */
+        text-align: center;
+    }
+
+
+    .sliding-cart .cart-summary-footer {
+        padding: 1rem;
+        border-top: 1px solid #eeebe3;
+        background-color: #f9f9f9; /* Slightly different background for footer */
+    }
+
+    .sliding-cart .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2B2B2B; /* Charcoal */
+    }
+
+        .sliding-cart .summary-row span:last-child {
+            color: #FF6A00; /* Orange for the total value */
+        }
+
+    .sliding-cart .summary-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .sliding-cart .btn {
+        padding: 0.8rem 1rem;
+        border-radius: 50px; /* Rounded buttons */
+        text-align: center;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* CORRECTED: Button styles in Sliding Cart */
+
+    .sliding-cart .view-cart-btn {
+        background-color: #FF6A00; /* Orange background */
+        color: #2B2B2B !important; /* Charcoal text - ensures visibility */
+        border: 1px solid #FF6A00; /* Match border to background */
+    }
+
+        .sliding-cart .view-cart-btn:hover {
+            background-color: #e65f00; /* Darker orange on hover */
+            color: #2B2B2B; /* Keep charcoal text on hover */
+        }
+
+    .sliding-cart .checkout-cart-btn {
+        background-color: #2B2B2B; /* Charcoal background */
+        color: white; /* White text - ensures visibility */
+        border: 1px solid #2B2B2B; /* Match border to background */
+    }
+
+        .sliding-cart .checkout-cart-btn:hover {
+            background-color: #000; /* Even darker charcoal/black on hover */
+            color: white; /* Keep white text on hover */
+        }
+
+/* Overlay for when cart is open */
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999; /* Below the cart, above main content */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+    .cart-overlay.visible {
+        opacity: 1;
+        pointer-events: all;
+    }

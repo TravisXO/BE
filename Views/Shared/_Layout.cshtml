@@ -13,35 +13,264 @@
     <link rel="stylesheet" href="~/css/footer.css" />
     <link rel="stylesheet" href="~/css/index.css" />
     <link rel="stylesheet" href="~/css/about.css" />
+    <link rel="stylesheet" href="~/css/shop.css" />
     <link rel="stylesheet" href="~/css/contact.css" />
     <link rel="stylesheet" href="~/css/cart.css" />
+    <link rel="stylesheet" href="~/css/details.css" />
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="custom-hamburger">
-                <span class="line line1"></span>
-                <span class="line line2"></span>
-                <span class="line line3"></span>
+
+    @* --- Flag sidebar hide for Shop/Shop OR Cart/Index --- *@
+    @{
+        var ctrl = ViewContext.RouteData.Values["Controller"] as string;
+        var act = ViewContext.RouteData.Values["Action"] as string;
+        var hideSidebar =
+        (string.Equals(ctrl, "Shop", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(act, "Shop", StringComparison.OrdinalIgnoreCase))
+        || (string.Equals(ctrl, "Cart", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(act, "Index", StringComparison.OrdinalIgnoreCase));
+
+        var layoutMargin = hideSidebar ? "0" : "80px";
+    }
+
+    @* Sidebar: only render when not on Shop/Shop *@
+    @if (!hideSidebar)
+    {
+        <div class="sidebar">
+            <div class="sidebar-header" id="sidebarHeader">
+                <div class="custom-hamburger">
+                    <span class="line line1"></span>
+                    <span class="line line2"></span>
+                    <span class="line line3"></span>
+                </div>
+            </div>
+
+            <div class="mega-menu" id="megaMenu">
+                <div class="mega-menu-header">
+                    <h3>Categories</h3>
+                    <button class="close-mega-menu-btn" id="closeMegaMenuBtn">&times;</button>
+                </div>
+                <ul class="mega-menu-list">
+                    <li class="mega-menu-item-with-submenu" id="bagsAndBackpacksMenuItem">
+                        <a href="@Url.Action("Shop", "Shop", new { category = "Bags & Backpacks" })"><i class="bi bi-bag"></i> Bags & Backpacks</a>
+                    </li>
+                    <li class="mega-menu-item-with-submenu" id="covidProductsMenuItem">
+                        <a href="@Url.Action("Shop", "Shop", new { category = "COVID-19 Products" })"><i class="bi bi-mask"></i> COVID-19 Products</a>
+                    </li>
+                    <li class="mega-menu-item-with-submenu" id="clothingMenuItem">
+                        <a href="@Url.Action("Shop", "Shop", new { category = "Clothing" })"><i class="bi bi-person"></i> Clothing</a>
+                    </li>
+                    <li class="mega-menu-item-with-submenu" id="customPackagingMenuItem">
+                        <a href="@Url.Action("Shop", "Shop", new { category = "Custom Packaging" })"><i class="bi bi-box"></i> Custom Packaging</a>
+                    </li>
+                    <li class="mega-menu-item-with-submenu" id="drinkwareMenuItem">
+                        <a href="@Url.Action("Shop", "Shop", new { category = "Drinkware" })"><i class="bi bi-cup-straw"></i> Drinkware</a>
+                    </li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Festive Gifts" })"><i class="bi bi-gift"></i> Festive Gifts</a></li>
+                    <li class="mega-menu-item-with-submenu" id="gadgetsTechMenuItem">
+                        <a href="@Url.Action("Shop", "Shop", new { category = "Gadgets & Tech" })"><i class="bi bi-phone"></i> Gadgets & Tech</a>
+                    </li>
+                    <li class="mega-menu-item-with-submenu" id="homeOutdoorMenuItem">
+                        <a href="@Url.Action("Shop", "Shop", new { category = "Home & Outdoor" })"><i class="bi bi-house"></i> Home & Outdoor</a>
+                    </li>
+                    <li class="mega-menu-item-with-submenu" id="miscellaneousMenuItem">
+                        <a href="@Url.Action("Shop", "Shop", new { category = "Miscellaneous" })"><i class="bi bi-three-dots"></i> Miscellaneous</a>
+                    </li>
+                    <li class="mega-menu-item-with-submenu" id="officeMenuItem">
+                        <a href="@Url.Action("Shop", "Shop", new { category = "Office" })"><i class="bi bi-building"></i> Office</a>
+                    </li>
+                    <li class="mega-menu-item-with-submenu" id="sportFitnessMenuItem"><a href="@Url.Action("Shop", "Shop", new { category = "Sport & Fitness" })"><i class="bi bi-bicycle"></i> Sport & Fitness</a></li>
+                    <li class="mega-menu-item-with-submenu" id="tradeshowsEventsMenuItem"><a href="@Url.Action("Shop", "Shop", new { category = "Tradeshows & Events" })"><i class="bi bi-calendar-event"></i> Tradeshows & Events</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="megaSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Bags & Backpacks</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Bags & Backpacks" })" class="mega-submenu-highlight-link">See All Bags & Backpacks</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Backpacks" })">Backpacks</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Business Bags" })">Business Bags</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Cooler & Lunch Bags" })">Cooler & Lunch Bags</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Drawstring Bags" })">Drawstring Bags</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Gift Bags" })">Gift Bags</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Totes & Bags" })">Totes & Bags</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Travel Bags" })">Travel Bags</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="covidProductsSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>COVID-19 Products</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "COVID-19 Products" })" class="mega-submenu-highlight-link">See All COVID-19 Products</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Anti-Germ Gifts" })">Anti-Germ Gifts</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Educational Displays" })">Educational Displays</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Face Masks" })">Face Masks</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Face Shields" })">Face Shields</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Thermometers" })">Thermometers</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Wellness Gift Sets" })">Wellness Gift Sets</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="clothingSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Clothing</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Clothing" })" class="mega-submenu-highlight-link">See All Clothing</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Bottoms" })">Bottoms</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Caps" })">Caps</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Clothing Accessories" })">Clothing Accessories</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Headwear" })">Headwear</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Kids Clothing" })">Kids Clothing</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Outerwear" })">Outerwear</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Shirts" })">Shirts</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Sport Clothing" })">Sport Clothing</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Workwear" })">Workwear</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="customPackagingSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Custom Packaging</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Custom Packaging" })" class="mega-submenu-highlight-link">See All Custom Packaging</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Cases and Pouches" })">Cases and Pouches</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Gift Bags" })">Gift Bags</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Presentation & Gift Boxes" })">Presentation & Gift Boxes</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Ribbons" })">Ribbons</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Tissue Paper & Fillers" })">Tissue Paper & Fillers</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="drinkwareSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Drinkware</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Drinkware" })" class="mega-submenu-highlight-link">See All Drinkware</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Coffee Mugs" })">Coffee Mugs</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Drinkware Accessories" })">Drinkware Accessories</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Drinkware Sets" })">Drinkware Sets</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Glassware" })">Glassware</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Metal Drinkware" })">Metal Drinkware</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Plastic Drinkware" })">Plastic Drinkware</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Travel Drinkware" })">Travel Drinkware</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Water Bottles" })">Water Bottles</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="gadgetsTechSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Gadgets & Tech</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Gadgets & Tech" })" class="mega-submenu-highlight-link">See All Gadgets & Tech</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Computer Accessories" })">Computer Accessories</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Gadgets & Cellphone" })">Gadgets & Cellphone</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Tech Stands & Holders" })">Tech Stands & Holders</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "USB's & Memory Sticks" })">USB's & Memory Sticks</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="homeOutdoorSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Home & Outdoor</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Home & Outdoor" })" class="mega-submenu-highlight-link">See All Home & Outdoor</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Food & Beverages" })">Food & Beverages</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Home" })">Home</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Kitchen" })">Kitchen</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Outdoor" })">Outdoor</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Tools" })">Tools</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Toys & Games" })">Toys & Games</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Umbrellas" })">Umbrellas</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="miscellaneousSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Miscellaneous</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Miscellaneous" })" class="mega-submenu-highlight-link">See All Miscellaneous</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Badges" })">Badges</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Gift Sets & Hampers" })">Gift Sets & Hampers</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Keyrings" })">Keyrings</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Magnets" })">Magnets</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Personal Care" })">Personal Care</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Stress Balls" })">Stress Balls</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Stickers" })">Stickers</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Sunglasses" })">Sunglasses</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Travel Accessories" })">Travel Accessories</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Wallets" })">Wallets</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Watches" })">Watches</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="officeSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Office</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Office" })" class="mega-submenu-highlight-link">See All Office</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Awards & Trophies" })">Awards & Trophies</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Colouring" })">Colouring</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Desk & Wall Items" })">Desk & Wall Items</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Notebooks & Diaries" })">Notebooks & Diaries</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Organisers" })">Organisers</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Stationery" })">Stationery</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Writing" })">Writing</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="sportFitnessSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Sport & Fitness</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Sport & Fitness" })" class="mega-submenu-highlight-link">See All Sport & Fitness</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Golf Items" })">Golf Items</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Gym & Sport Items" })">Gym & Sport Items</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Sport Balls" })">Sport Balls</a></li>
+                </ul>
+            </div>
+
+            <div class="mega-submenu" id="tradeshowsEventsSubmenu">
+                <div class="mega-submenu-header">
+                    <h3>Tradeshows & Events</h3>
+                </div>
+                <ul class="mega-submenu-list">
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Tradeshows & Events" })" class="mega-submenu-highlight-link">See All Tradeshows & Events</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "ID Holders, Pouches & Inserts" })">ID Holders, Pouches & Inserts</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Lanyards" })">Lanyards</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Signage & Display Products" })">Signage & Display Products</a></li>
+                    <li><a href="@Url.Action("Shop", "Shop", new { category = "Wristbands" })">Wristbands</a></li>
+                </ul>
+            </div>
+
+            <div class="quick-scroll">
+                <div class="scroll-label">
+                    <span>Quick</span><br />
+                    <span>Scroll</span>
+                </div>
+                <div class="scroll-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
             </div>
         </div>
+    }
 
-        <div class="quick-scroll">
-            <div class="scroll-label">
-                <span>Quick</span><br />
-                <span>Scroll</span>
-            </div>
-            <div class="scroll-dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-        </div>
-    </div>
-
-    <header class="header">
+    <header class="header" style="margin-left:@layoutMargin;">
         <div class="logo">BE.</div>
         <nav class="nav-links">
             <a asp-controller="Home" asp-action="Index">HOME</a>
@@ -51,23 +280,23 @@
         </nav>
         <div class="nav-icons">
             @Html.Partial("_LoginPartial")
-            <a asp-controller="Cart" asp-action="Cart">
+            <a asp-controller="Cart" asp-action="Index">
                 <i class="fa fa-shopping-cart"></i>
             </a>
             <i class="fa fa-search"></i>
         </div>
     </header>
 
-    <!-- Render main content -->
-    <main style="margin-left: 80px;">
+    @* Main content: margin collapses when sidebar is hidden *@
+    <main style="margin-left:@layoutMargin;">
         @RenderBody()
     </main>
 
-    <footer class="border-top footer text-muted" style="margin-left: 80px;">
+    @* Footer: same dynamic margin logic *@
+    <footer class="border-top footer text-muted" style="margin-left:@layoutMargin;">
         <div class="footer-main">
             <div class="container">
                 <div class="footer-content">
-                    <!-- Column 1: Logo and Contact Info -->
                     <div class="footer-column">
                         <div class="footer-logo">
                             <h2 class="logo">BE.</h2>
@@ -87,8 +316,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Column 2: Quick Links -->
                     <div class="footer-column">
                         <h3 class="footer-heading">QUICK LINKS</h3>
                         <ul class="footer-links">
@@ -98,8 +325,6 @@
                             <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
                         </ul>
                     </div>
-
-                    <!-- Column 3: Explore -->
                     <div class="footer-column">
                         <h3 class="footer-heading">EXPLORE</h3>
                         <ul class="footer-links">
@@ -110,8 +335,6 @@
                         </ul>
                     </div>
                 </div>
-
-                <!-- Social Media Banner -->
                 <div class="social-banner">
                     <a href="#" class="social-icon facebook"></a>
                     <a href="#" class="social-icon whatsapp"></a>
@@ -121,8 +344,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Copyright Bar -->
         <div class="copyright-bar">
             <div class="container">
                 <div class="copyright-content">
@@ -133,56 +354,80 @@
         </div>
     </footer>
 
+    <div id="slidingCart" class="sliding-cart">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button id="closeCartBtn" class="close-btn">&times;</button>
+        </div>
+        <div class="cart-items-list">
+            <p class="empty-cart-message">Your cart is empty.</p>
+        </div>
+        <div class="cart-summary-footer">
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span id="cartSubtotal">R 0.00</span>
+            </div>
+            <div class="summary-actions">
+                <a href="/Cart/Index" class="btn view-cart-btn" style="color: var(--charcoal);">View Full Cart</a>
+                <a href="/Checkout/Index" class="btn checkout-cart-btn">Checkout</a>
+            </div>
+        </div>
+    </div>
+
+    <img src="~/images/index/marble-head.png" alt="Marble Head" class="marble-head-asset" id="marbleHeadAsset">
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/shop.js" asp-append-version="true"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const sections = document.querySelectorAll("section");
             const scrollDotsContainer = document.querySelector(".scroll-dots");
-
-            // Clear existing static dots (optional, safe reset)
-            scrollDotsContainer.innerHTML = "";
-
-            // Create a dot for each section and link to it
-            sections.forEach((section, index) => {
-                const dot = document.createElement("div");
-                dot.classList.add("dot");
-
-                // Optional: Add click scroll behavior
-                dot.addEventListener("click", () => {
-                    section.scrollIntoView({ behavior: "smooth", block: "start" });
+            if (scrollDotsContainer) { // Check if element exists before manipulating
+                scrollDotsContainer.innerHTML = "";
+                sections.forEach(section => {
+                    const dot = document.createElement("div");
+                    dot.classList.add("dot");
+                    dot.addEventListener("click", () => {
+                        section.scrollIntoView({ behavior: "smooth", block: "start" });
+                    });
+                    scrollDotsContainer.appendChild(dot);
                 });
-
-                scrollDotsContainer.appendChild(dot);
-            });
+            }
         });
     </script>
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const track = document.querySelector(".carousel-track");
-        const prev = document.querySelector(".carousel-nav.prev");
-        const next = document.querySelector(".carousel-nav.next");
-        const cards = document.querySelectorAll(".carousel-card");
-        const cardWidth = cards[0].offsetWidth + 32; // 32px = gap
-
-        let position = 0;
-
-        prev.addEventListener("click", () => {
-            if (position > 0) {
-                position--;
-                track.style.transform = `translateX(-${cardWidth * position}px)`;
+        document.addEventListener("DOMContentLoaded", function () {
+            const track = document.querySelector(".carousel-track");
+            const prev = document.querySelector(".carousel-nav.prev");
+            const next = document.querySelector(".carousel-nav.next");
+            const cards = document.querySelectorAll(".carousel-card");
+            if (track && prev && next && cards.length > 0) { // Check if elements exist
+                const cardWidth = cards[0].offsetWidth + 32; // 32px gap
+                let position = 0;
+                prev.addEventListener("click", () => {
+                    if (position > 0) {
+                        position--;
+                        track.style.transform = `translateX(-${cardWidth * position}px)`;
+                    }
+                });
+                next.addEventListener("click", () => {
+                    if (position < cards.length - 4) {
+                        position++;
+                        track.style.transform = `translateX(-${cardWidth * position}px)`;
+                    }
+                });
             }
         });
-
-        next.addEventListener("click", () => {
-            if (position < cards.length - 4) {
-                position++;
-                track.style.transform = `translateX(-${cardWidth * position}px)`;
-            }
-        });
-    });
-</script>
+    </script>
+    @* Define JavaScript variables for URLs needed by shop.js *@
+    <script>
+        const addToCartUrl = '@Url.Action("AddToCart", "Cart")';
+        const removeFromCartUrl = '@Url.Action("RemoveFromCart", "Cart")';
+        const getCartDataUrl = '@Url.Action("GetCartData", "Cart")';
+        const updateQuantityUrl = '@Url.Action("UpdateQuantity", "Cart")'; // NEW LINE
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
     @RenderSection("Styles", required: false)
 </body>

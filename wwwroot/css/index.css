@@ -133,3 +133,106 @@
         color: #2b2b2b;
     }
 
+/* Add the following for the marble-head-asset and sidebar interaction */
+.marble-head-asset {
+    position: fixed; /* Keep it in the viewport */
+    top: 0; /* Adjust as needed for initial positioning */
+    left: 0; /* Adjust as needed for initial positioning */
+    width: 0; /* Start hidden and small */
+    height: 0;
+    opacity: 0; /* Start fully transparent */
+    transform-origin: top left; /* Make it grow from its top-left corner */
+    transition: width 0.5s ease-out, height 0.5s ease-out, opacity 0.5s ease-out; /* Smooth transition */
+    z-index: 99; /* Ensure it's above other content but possibly below header */
+}
+
+/* Class to hide the sidebar header */
+.sidebar-header.hidden {
+    opacity: 0;
+    pointer-events: none; /* Disable interactions when hidden */
+    visibility: hidden; /* Ensure it's completely hidden from layout and accessibility tree */
+    transition: opacity 0.5s ease-out, visibility 0s 0.5s; /* Delay visibility change for smooth fade */
+}
+
+.sidebar-header {
+    transition: opacity 0.5s ease-out, visibility 0s; /* Add transition for visibility for when it shows up again */
+}
+
+/* Existing CSS for .hero-cta-button, .carousel-container, .marble-head-asset, etc. */
+
+/* Adjusted for why-statue.png to reach full size */
+.why-statue-asset {
+    position: absolute; /* Position relative to its parent section */
+    bottom: 0; /* Aligns to the bottom of the parent */
+    right: 0; /* Aligns to the right of the parent */
+    margin: 0; /* Ensure no extra margin */
+    padding: 0; /* Ensure no extra padding */
+    z-index: 1; /* Adjust z-index if it needs to be behind other content */
+    width: 1366px; /* Set to its full native width */
+    height: 768px; /* Set to its full native height */
+    object-fit: contain; /* Ensures the image fits within the defined dimensions without cropping if aspect ratio is slightly off, though typically not needed if exact width/height are set. */
+}
+
+/* Ensure the parent section has position: relative if it doesn't already */
+#why-choose-us {
+    position: relative;
+    /* Other styles for why-choose-us are already in your Index.cshtml inline styles */
+    /* You might need to add a min-height to this section if the statue overflows content */
+    min-height: 768px; /* Example: Ensures the section is at least as tall as the image */
+}
+
+/* Existing CSS for .hero-cta-button, .carousel-container, .marble-head-asset, .why-statue-asset etc. */
+
+/* New styles for highlighted words with hand-drawn circles */
+.highlight-text {
+    position: relative;
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    font-size: 1.5rem; /* Increased font size (e.g., from 1.1rem to 1.2rem) */
+    margin-left: 1.5rem; /* Moves the whole element and its pseudo-element to the right */
+    line-height: 1;
+    z-index: 1;
+}
+
+    .highlight-text::after {
+        content: ''; /* Required for pseudo-elements */
+        position: absolute; /* Position relative to .highlight-text */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Center the pseudo-element */
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain; /* Will scale the image to fit the pseudo-element's dimensions */
+        z-index: -1; /* Place behind the text */
+    }
+
+/* Specific styles for each highlight image - Further adjustments for encapsulation */
+.mark-highlight::after {
+    background-image: url('/images/index/mark-hand-drawn1.png');
+    /* Adjust width/height based on new padding and image shape */
+    width: 130%; /* May need further fine-tuning */
+    height: 140%; /* May need further fine-tuning */
+    /* Potentially adjust background-position if the image isn't perfectly centered around the text */
+    /* background-position: center 55%; */ /* Example: if it needs to shift down slightly */
+}
+
+.impact-highlight::after {
+    background-image: url('/images/index/impact-hand-drawn1.png');
+    width: 150%; /* May need further fine-tuning */
+    height: 150%; /* May need further fine-tuning */
+    /* background-position: center 50%; */ /* Default center, adjust if needed */
+}
+
+.brought-highlight::after {
+    background-image: url('/images/index/brought-hand-drawn1.png');
+    width: 200%; /* May need further fine-tuning */
+    height: 200%; /* May need further fine-tuning */
+    /* background-position: center 50%; */ /* Default center, adjust if needed */
+}
+
+/* Ensure the parent section has position: relative if it doesn't already */
+#why-choose-us {
+    position: relative;
+    /* Other styles for why-choose-us are already in your Index.cshtml inline styles */
+    min-height: 768px; /* Example: Ensures the section is at least as tall as the image */
+}

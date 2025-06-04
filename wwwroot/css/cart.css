@@ -1,17 +1,17 @@
-﻿/* Import fonts */
+﻿/* Import fonts from Brand Identity */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
-/* Color variables */
+/* Color variables from Brand Identity */
 :root {
     --orange: #FF6A00;
     --beige: #EEEBE3;
     --charcoal: #2B2B2B;
-    --light-gray: #F5F5F5;
-    --mid-gray: #DDDDDD;
+    --light-gray: #F5F5F5; /* Keep for general light gray UI elements */
+    --mid-gray: #DDDDDD; /* Keep for general mid-gray UI elements */
     --white: #FFFFFF;
 }
 
-/* Container layout */
+/* === Global Layout & Structure from previous cart.css (unchanged basic container styles) === */
 .cart-container {
     margin: 0 auto;
     padding: 4rem 2rem;
@@ -54,23 +54,38 @@
     align-self: flex-start;
 }
 
-/* Cart table styles */
+/* === Cart table styles (MODIFIED for alignment) === */
 .cart-table-header {
     display: flex;
     justify-content: space-between;
     padding-bottom: 1rem;
+    /* NEW: Added padding to align with item content below */
+    padding-left: 2rem; /* Adjusted to align with item-details */
+    padding-right: 2rem; /* Adjusted to align with item-total/remove */
 }
 
 .select-all-text {
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--orange);
+    flex: 1; /* Allows it to take available space */
+    text-align: left; /* Align text left */
 }
 
-.quantity-header, .total-header {
+.quantity-header {
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--orange);
+    width: 150px; /* Give it a fixed width to align with quantity controls */
+    text-align: center; /* Center "QUANTITY" text */
+}
+
+.total-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--orange);
+    width: 80px; /* Give it a fixed width to align with total price */
+    text-align: right; /* Align "TOTAL" text right */
 }
 
 .divider {
@@ -79,84 +94,77 @@
     margin: 0.5rem 0;
 }
 
-/* Cart item styles */
-.cart-item {
+/* === Cart item styles (MODIFIED for alignment) === */
+.cart-item-row { /* This is the new class for the main cart page item row */
     display: flex;
-    align-items: center;
+    align-items: center; /* Vertically align all items in the row */
     padding: 1.5rem 0;
     position: relative;
+    border-bottom: 1px solid var(--mid-gray); /* Ensure consistent border */
+    /* NEW: Added padding here to align with table header */
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
-.item-select {
-    flex: 0 0 5%;
-}
-
-    .item-select input[type="checkbox"] {
-        appearance: none;
-        -webkit-appearance: none;
-        width: 20px;
-        height: 20px;
-        border: 2px solid var(--mid-gray);
-        border-radius: 50%;
-        cursor: pointer;
-        position: relative;
+    .cart-item-row:last-child {
+        border-bottom: none; /* No border for the last item */
     }
 
-        .item-select input[type="checkbox"]:checked {
-            background-color: var(--orange);
-            border-color: var(--orange);
-        }
-
-            .item-select input[type="checkbox"]:checked::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 10px;
-                height: 10px;
-                background-color: white;
-                border-radius: 50%;
-            }
+.item-select {
+    /* flex: 0 0 5%; Remove if no checkbox is used on cart page item select */
+    width: 0; /* Assuming no checkbox, make this zero width */
+}
 
 .item-image {
-    flex: 0 0 12%;
-    padding: 0 1rem;
+    /* Ensure a consistent size for the image on the main cart page */
+    width: 100px; /* Smaller size for row display */
+    height: 100px; /* Smaller size for row display */
+    flex-shrink: 0; /* Prevent shrinking */
+    object-fit: contain; /* Contain image within its bounds */
+    margin-right: 1rem; /* Space between image and details */
+    display: flex; /* Use flex to center image if needed */
+    align-items: center;
+    justify-content: flex-start;
 }
 
     .item-image img {
-        width: 100%;
-        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
         border-radius: 4px;
-        object-fit: cover;
+        display: block;
     }
 
 .item-details {
-    flex: 1 1 auto;
-    padding: 0 1rem;
+    flex-grow: 1; /* Allow details to take up remaining space */
+    padding: 0 1rem; /* Padding around item details text */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically align content within details */
+    align-items: flex-start; /* Align text within details to the left */
 }
 
-.item-name {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-}
+    .item-details .item-name { /* Specific to main cart page */
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--charcoal);
+        font-size: 1rem; /* Adjust font size if needed */
+        line-height: 1.2;
+    }
 
-.item-variant {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 0.25rem;
-}
+    .item-details .item-price { /* Specific to main cart page */
+        font-size: 0.9rem;
+        color: #666;
+    }
 
-.item-price {
-    font-size: 0.9rem;
-    color: #666;
-}
 
 .item-quantity {
-    flex: 0 0 25%;
+    /* Use fixed width for quantity section to align with header */
+    width: 150px; /* Matches quantity-header width */
+    flex-shrink: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    justify-content: center; /* Horizontally center quantity controls */
+    align-items: center; /* Vertically center quantity controls */
 }
 
 .quantity-btn {
@@ -169,7 +177,24 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    color: var(--charcoal); /* Ensure icon/text color is visible */
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+    .quantity-btn:hover {
+        background-color: var(--orange);
+        color: white; /* White text/icon on hover */
+    }
+
+    .quantity-btn svg path { /* Target SVG paths for color */
+        stroke: var(--charcoal);
+        transition: stroke 0.2s ease;
+    }
+
+    .quantity-btn:hover svg path {
+        stroke: white; /* White on hover */
+    }
+
 
 .quantity-input {
     width: 50px;
@@ -178,18 +203,25 @@
     text-align: center;
     margin: 0 0.5rem;
     border-radius: 4px;
+    color: var(--charcoal); /* Ensure input text is visible */
 }
 
 .item-total {
-    flex: 0 0 15%;
-    text-align: right;
+    /* Use fixed width for total section to align with header */
+    width: 80px; /* Matches total-header width */
+    flex-shrink: 0;
+    text-align: right; /* Align text right */
     font-weight: 600;
+    color: var(--orange);
 }
 
 .item-remove {
-    flex: 0 0 5%;
+    /* Position for the remove button */
+    flex-shrink: 0;
+    width: 40px; /* Small fixed width for the remove button area */
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .remove-btn {
@@ -198,7 +230,16 @@
     cursor: pointer;
 }
 
-/* Summary styles */
+    .remove-btn svg path {
+        stroke: #777; /* Color for remove icon */
+        transition: stroke 0.2s ease;
+    }
+
+    .remove-btn:hover svg path {
+        stroke: var(--charcoal); /* Darker on hover */
+    }
+
+/* === Summary styles (unchanged from previous fix) === */
 .summary-header {
     font-size: 1.25rem;
     font-weight: 700;
@@ -229,11 +270,17 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
-}
-
-.summary-label, .summary-value {
     font-size: 0.95rem;
 }
+
+    .summary-row .summary-label {
+        color: var(--charcoal);
+    }
+
+    .summary-row .summary-value {
+        font-weight: 500;
+        color: var(--charcoal);
+    }
 
 .summary-total {
     display: flex;
@@ -255,7 +302,7 @@
     color: var(--orange);
 }
 
-/* Button styles */
+/* === Button styles (MODIFIED for visibility) === */
 .checkout-btn {
     width: 100%;
     padding: 1rem;
@@ -276,8 +323,9 @@
 .paypal-btn {
     width: 100%;
     padding: 0.75rem;
-    background-color: var(--white);
-    border: 1px solid var(--mid-gray);
+    background-color: var(--orange);
+    color: var(--white);
+    border: none;
     border-radius: 50px;
     display: flex;
     align-items: center;
@@ -285,14 +333,21 @@
     gap: 0.5rem;
     cursor: pointer;
     margin-bottom: 2rem;
-    transition: border-color 0.3s;
+    transition: background-color 0.3s;
 }
 
     .paypal-btn:hover {
-        border-color: var(--charcoal);
+        background-color: #e65f00;
     }
 
-/* Shipping info */
+    .paypal-btn span {
+        color: var(--white);
+    }
+
+/* For PayPal SVG, if it's inline, you might need to adjust fill. */
+
+
+/* === Shipping info (unchanged) === */
 .shipping-info {
     margin-bottom: 1.5rem;
 }
@@ -309,7 +364,7 @@
     word-break: break-all;
 }
 
-/* Help section */
+/* === Help section (unchanged) === */
 .help-section {
     padding-top: 1rem;
     border-top: 1px solid var(--mid-gray);
@@ -320,70 +375,96 @@
     font-weight: 600;
 }
 
-/* Responsive styles */
-@media (max-width: 768px) {
+/* === Responsive styles (MODIFIED) === */
+@media (max-width: 992px) { /* Changed from 768px in previous version based on common breakpoint */
+    .cart-table-header, .cart-item-row {
+        padding-left: 1rem; /* Adjust padding for smaller screens */
+        padding-right: 1rem;
+    }
+}
+
+@media (max-width: 768px) { /* This breakpoint for stacking content */
     .cart-content {
         flex-direction: column;
+        gap: 1rem; /* Reduce gap when stacking */
     }
 
     .cart-items-container, .cart-summary {
         flex: 1 1 100%;
+        padding: 1rem; /* Adjust padding for full width */
     }
 
-    .cart-item {
-        flex-wrap: wrap;
+    .cart-table-header {
+        display: none; /* Hide table headers on small screens */
+    }
+
+    .cart-item-row {
+        flex-wrap: wrap; /* Allow items to wrap */
+        justify-content: flex-start; /* Ensure items start from left */
+        align-items: flex-start; /* Align items to top in wrapped row */
+        padding: 1rem 0; /* Adjust padding for wrapped items */
     }
 
     .item-select {
-        flex: 0 0 10%;
+        flex: 0 0 5%;
+        margin-right: 0.5rem;
     }
 
     .item-image {
-        flex: 0 0 25%;
+        width: 80px; /* Adjust size for mobile */
+        height: 80px;
+        margin-right: 0.8rem; /* Space after image */
     }
 
     .item-details {
-        flex: 1 1 55%;
+        flex: 1 1 calc(100% - 100px - 0.8rem); /* Adjust width to fit image and margin */
+        padding: 0; /* Remove horizontal padding here */
+        margin-right: 0;
+    }
+
+    .item-quantity {
+        flex: 0 0 100%; /* Take full width on small screens */
+        justify-content: flex-start; /* Align quantity controls to the left */
+        margin-top: 0.5rem; /* Space between details and quantity */
+        padding-left: calc(80px + 0.8rem); /* Align with product details content */
+    }
+
+    .quantity-input {
+        width: 40px; /* Smaller input on mobile */
+    }
+
+    .item-total {
+        flex: 0 0 100%; /* Take full width */
+        text-align: left; /* Align total below quantity */
+        margin-top: 0.5rem;
+        padding-left: calc(80px + 0.8rem); /* Align with product details content */
+        font-size: 1.1rem; /* Make total more prominent */
     }
 
     .item-remove {
-        flex: 0 0 10%;
-        position: absolute;
-        top: 1.5rem;
-        right: 0;
-    }
-
-    .item-quantity {
-        flex: 0 0 60%;
-        margin-left: 35%;
-        margin-top: 1rem;
-        justify-content: flex-start;
-    }
-
-    .item-total {
-        flex: 0 0 40%;
-        margin-top: 1rem;
-        text-align: right;
+        position: absolute; /* Position remove button absolutely */
+        top: 1rem; /* Position from top */
+        right: 1rem; /* Position from right */
+        width: auto;
+        height: auto;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 480px) { /* Even smaller screens */
+    .cart-item-row {
+        padding: 1rem 0.5rem;
+    }
+
     .item-image {
-        flex: 0 0 30%;
+        width: 60px;
+        height: 60px;
     }
 
     .item-details {
-        flex: 1 1 50%;
+        flex: 1 1 calc(100% - 70px - 0.8rem); /* Adjust width for smaller image */
     }
 
-    .item-quantity {
-        flex: 0 0 100%;
-        margin-left: 0;
-        justify-content: center;
-    }
-
-    .item-total {
-        flex: 0 0 100%;
-        text-align: center;
+    .item-quantity, .item-total {
+        padding-left: calc(60px + 0.8rem);
     }
 }
